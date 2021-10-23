@@ -3,7 +3,7 @@ module lab5(key, sw, hex);
     input [3:0] key, sw;
     output [5:0] hex;
 
-
+    //testing github func
 
 
 
