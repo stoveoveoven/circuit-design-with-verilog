@@ -1,14 +1,14 @@
 //top level module
 module lab3_top(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
-  input [9:0] SW;
-  input [3:0] KEY;
-  output [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
-  output [9:0] LEDR; // optional: use these outputs for debugging on your DE1-SoC
+    input [9:0] SW;
+    input [3:0] KEY;
+    output [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
+    output [9:0] LEDR; // optional: use these outputs for debugging on your DE1-SoC
 
-  wire [4:0] stateToLED;
+    wire [4:0] stateToLED;
 
-  stateMachine(SW[3:0], KEY[0], KEY[3], stateToLED);
-  HEXDisplay(stateToLED, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
+    stateMachine(SW[3:0], KEY[0], KEY[3], stateToLED);
+    HEXDisplay(stateToLED, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 endmodule
 
 //State machine for numerical inputs
