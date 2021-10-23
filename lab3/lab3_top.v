@@ -1,12 +1,14 @@
+//top level module
 module lab3_top(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
   input [9:0] SW;
   input [3:0] KEY;
   output [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
   output [9:0] LEDR; // optional: use these outputs for debugging on your DE1-SoC
 
-  
+  wire [4:0] stateToLED;
 
-  
+  stateMachine(SW[3:0], KEY[0], KEY[3], stateToLED);
+  HEXDisplay(stateToLED, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 endmodule
 
 //State machine for numerical inputs
@@ -42,6 +44,7 @@ module stateMachine(in, clk, rst, out);
                 out = {1 , state};
             end
             else if(state[3] == 0)begin
+                out = {1, in};
                 case(state)
                     `A: state = (in == 4b'0100) ? `B : `Abad;
                     `B: state = (in == 4b'1000) ? `C : `Bbad;
@@ -50,9 +53,9 @@ module stateMachine(in, clk, rst, out);
                     `E: state = (in == 4b'0001) ? `F : `Ebad;
                     `F: state = (in == 4b'0101) ? `unlocked : `failed;
                 endcase
-                out = {1, in};
             end
             else if(state[3] == 1)begin
+                out = {1, in};
                 case(state)
                     `Abad: state = `Bbad;
                     `Bbad: state = `Cbad;
@@ -61,14 +64,13 @@ module stateMachine(in, clk, rst, out);
                     `Ebad: state = `failed;
                     `failed: state = `failed;
                 endcase
-                out = {1, in};
             end
         end
     end
 endmodule
 
 //CL block for input to LED display
-module LEDDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
+module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
     `define zero 7b'1111110
     `define one 7b'0000110
     `define two 7b'1101101
