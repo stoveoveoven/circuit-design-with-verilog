@@ -20,16 +20,16 @@ module test_success;
     initial begin
         
         //RESET LOCK
+	KEY[0] = 1'b1;
+        #5;        
+	KEY[3] = 1'b0;
+        #5;
+	KEY[0] = 1'b0;        
+        #5;
         KEY[3] = 1'b1;
         #5;
-        KEY[0] = 1'b1;
-        #5;
-        KEY[0] = 1'b0;
-        #5;
-        KEY[3] = 1'b0;
-        #5;
 
-        //STATE A
+	//STATE A
         #5;
         SW[3:0] = `A;
 
@@ -94,8 +94,6 @@ module test_success;
         KEY[0] = 1'b0;
 
         $display("sw: %b display: %b",SW[3:0],HEX0);
-
-
 
         // MUST INTERPRET BINARY RESULTS
         $display("%b %b %b %b %b %b",HEX0,HEX1,HEX2,HEX3,HEX4,HEX5);  
