@@ -31,8 +31,7 @@ module stateMachine(in, clk, rst, out);
     
     input clk, rst;
     input [3:0] in;
-    output [4:0] out;
-    reg [4:0] out;
+    output reg [4:0] out;
     reg [3:0] state;
 
     always@(posedge clk)begin
@@ -41,10 +40,10 @@ module stateMachine(in, clk, rst, out);
         end
         else begin
             if(state == 4b'0000 || state == 4b'1111)begin
-                out = {1 , state};
+                out = {1b'1, state};
             end
             else begin
-                out = {1, in};
+                out = {1b'0, in};
                 case(state)
                     `A: state = (in == 4b'0100) ? `B : `Abad;
                     `B: state = (in == 4b'1000) ? `C : `Bbad;
@@ -90,7 +89,7 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
     input [4:0] in;
     output [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
 
-    always @(*) begin
+    always @(in) begin
         if(in[4] == 1)begin
             case(in)
                 5b'10000:
