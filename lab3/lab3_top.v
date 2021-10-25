@@ -7,7 +7,7 @@ module lab3_top(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
 
     wire [4:0] stateToLED;
 
-    stateMachine(SW[3:0], KEY[0], KEY[3], stateToLED);
+    stateMachine(SW[3:0], ~KEY[0], ~KEY[3], stateToLED);
     HEXDisplay(stateToLED, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 endmodule
 
