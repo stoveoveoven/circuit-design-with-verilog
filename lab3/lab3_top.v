@@ -54,7 +54,7 @@ module stateMachine(in, clk, rst, out);
                 `Ebad: state = `failed;
                 `failed: state = `failed;
             endcase	
-	    if(state == 4'b0000 || state == 4'b1111) begin
+	        if(state == 4'b0000 || state == 4'b1111) begin
             out = {1'b1, state};
             end
         end
@@ -107,6 +107,13 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
                     hex1 = `letE;
                     hex0 = `letD;
                 end
+                default: //unreachable
+                    hex5 = `OFF;
+                    hex4 = `letE;
+                    hex3 = `letR;
+                    hex2 = `letR;
+                    hex1 = `letO;
+                    hex0 = `letR;
             endcase
         end
         else begin
