@@ -14,12 +14,12 @@ module test_success;
     wire [4:0] stateToLED;
     reg[23:0] STATES;
 
-    STATES[3:0] = `A;
-    STATES[7:4] = `B;
-    STATES[11:8] = `C;
-    STATES[15:12] = `D;
-    STATES[19:16] = `E;
-    STATES[23:20] = `F;
+    assign STATES[3:0] = `A;
+    assign STATES[7:4] = `B;
+    assign STATES[11:8] = `C;
+    assign STATES[15:12] = `D;
+    assign STATES[19:16] = `E;
+    assign STATES[23:20] = `F;
 
     lab3_top DUT(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
 
