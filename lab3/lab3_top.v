@@ -107,13 +107,14 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
                     hex1 = `letE;
                     hex0 = `letD;
                 end
-                default: //unreachable
+                default: begin //unreachable
                     hex5 = `OFF;
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
                     hex1 = `letO;
                     hex0 = `letR;
+		end
             endcase
         end
         else begin
