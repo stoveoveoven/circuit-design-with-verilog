@@ -35,14 +35,14 @@ module stateMachine(in, clk, rst, out);
 
     always@(posedge clk)begin
         if(rst)begin
-            state = A;
+            state = `A;
         end
         else begin
             if(state == 4'b0000 || state == 4'b1111) begin
-                out = {1b'1, state};
+                out = {1'b1, state};
             end
             else begin
-                out = {1b'0, in};
+                out = {1'b0, in};
                 case(state)
                     `A: state = (in == 4'b0100) ? `B : `Abad;
                     `B: state = (in == 4'b1000) ? `C : `Bbad;
@@ -85,45 +85,47 @@ endmodule
 `define letN 7'b0010101
 module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
     input [4:0] in;
-    output [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
+    output reg [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
 
     always @(in) begin
         if(in[4] == 1)begin
             case(in)
-                5b'10000:
+                5'b10000: begin
                     hex5 = 7'b0000000;
                     hex4 = 7'b0000000;
                     hex3 = `letO;
                     hex2 = `letP;
                     hex1 = `letE;
                     hex0 = `letN;
-                5b'11111:
+                end
+                5'b11111: begin
                     hex5 = `letC;
                     hex4 = `letL;
                     hex3 = `letO;
                     hex2 = `letS;
                     hex1 = `letE;
                     hex0 = `letD;
+                end
             endcase
         end
         else begin
             hex5 = 7'b0000000;
             casex(in)
-                4b'01010: begin
+                4'b01010: begin
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
                     hex1 = `letO;
                     hex0 = `letR;
                 end
-                4b'01011: begin
+                4'b01011: begin
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
                     hex1 = `letO;
                     hex0 = `letR;
                 end
-                4b'011XX: begin
+                4'b011XX: begin
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
