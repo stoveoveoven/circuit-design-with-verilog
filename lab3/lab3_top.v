@@ -43,7 +43,7 @@ module stateMachine(in, clk, rst, out);
             if(state == 4b'0000 || state == 4b'1111)begin
                 out = {1 , state};
             end
-            else if(state[3] == 0)begin
+            else begin
                 out = {1, in};
                 case(state)
                     `A: state = (in == 4b'0100) ? `B : `Abad;
@@ -52,11 +52,6 @@ module stateMachine(in, clk, rst, out);
                     `D: state = (in == 4b'1000) ? `E : `Dbad;
                     `E: state = (in == 4b'0001) ? `F : `Ebad;
                     `F: state = (in == 4b'0101) ? `unlocked : `failed;
-                endcase
-            end
-            else if(state[3] == 1)begin
-                out = {1, in};
-                case(state)
                     `Abad: state = `Bbad;
                     `Bbad: state = `Cbad;
                     `Cbad: state = `Dbad;
@@ -99,6 +94,8 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
         if(in[4] == 1)begin
             case(in)
                 5b'10000:
+                    hex5 = 7b'0000000;
+                    hex4 = 7b'0000000;
                     hex3 = `letO;
                     hex2 = `letP;
                     hex1 = `letE;
@@ -114,50 +111,48 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
         end
         else begin
             hex5 = 7b'0000000;
-            if(in[3] == 0)begin
-            hex1 = 7b'0000000;
-            hex2 = 7b'0000000;
-            hex3 = 7b'0000000;
-            hex4 = 7b'0000000;
-            case(in)
-                4b'00000: hex0 = `zero;
-                4b'00001: hex0 = `one;
-                4b'00010: hex0 = `two;
-                4b'00011: hex0 = `three;
-                4b'00100: hex0 = `four;
-                4b'00101: hex0 = `five;
-                4b'00110: hex0 = `six;
-                4b'00111: hex0 = `seven;
+            casex(in)
+                4b'01010: begin
+                    hex4 = `letE;
+                    hex3 = `letR;
+                    hex2 = `letR;
+                    hex1 = `letO;
+                    hex0 = `letR;
+                end
+                4b'01011: begin
+                    hex4 = `letE;
+                    hex3 = `letR;
+                    hex2 = `letR;
+                    hex1 = `letO;
+                    hex0 = `letR;
+                end
+                4b'011XX: begin
+                    hex4 = `letE;
+                    hex3 = `letR;
+                    hex2 = `letR;
+                    hex1 = `letO;
+                    hex0 = `letR;
+                end
+                default: begin
+                    hex4 = 7b'0000000;
+                    hex3 = 7b'0000000;
+                    hex2 = 7b'0000000;
+                    hex1 = 7b'0000000;
+                    case(in)
+                        4b'00000: hex0 = `zero;
+                        4b'00001: hex0 = `one;
+                        4b'00010: hex0 = `two;
+                        4b'00011: hex0 = `three;
+                        4b'00100: hex0 = `four;
+                        4b'00101: hex0 = `five;
+                        4b'00110: hex0 = `six;
+                        4b'00111: hex0 = `seven;
+                        4b'01000: hex0 = `eight;
+                        4b'01001: hex0 = `nine;
+                        default: hex0 = 7b'0000000;
+                    endcase
+                end
             endcase
-            end
-            else begin
-                casex(in)
-                    4b'01000: 
-                        hex0 = `eight;
-                        hex1 = 7b'0000000;
-                        hex2 = 7b'0000000;
-                        hex3 = 7b'0000000;
-                        hex4 = 7b'0000000;
-                    4b'01001: 
-                        hex0 = `nine;
-                        hex1 = 7b'0000000;
-                        hex2 = 7b'0000000;
-                        hex3 = 7b'0000000;
-                        hex4 = 7b'0000000;
-                    4b'01010, 4b'1011, 4b'11XX: 
-                        hex4 = `letE;
-                        hex3 = `letR;
-                        hex2 = `letR;
-                        hex1 = `letO;
-                        hex0 = `letR;
-                    default:
-                        hex0 = 7b'0000000;
-                        hex1 = 7b'0000000;
-                        hex2 = 7b'0000000;
-                        hex3 = 7b'0000000;
-                        hex4 = 7b'0000000;
-                endcase
-            end
         end
     end
 endmodule
