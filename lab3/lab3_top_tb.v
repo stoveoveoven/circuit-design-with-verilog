@@ -1,13 +1,11 @@
 // TESTBENCHES
-
+`define A 4'b0001
+`define B 4'b0010
+`define C 4'b0011
+`define D 4'b0100
+`define E 4'b0101
+`define F 4'b0110
 module test_success;
-    `define A 4b'0001
-    `define B 4b'0010
-    `define C 4b'0011
-    `define D 4b'0100
-    `define E 4b'0101
-    `define F 4b'0110
-
     reg [9:0] SW;
     reg [3:0] KEY;
     wire [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
@@ -54,3 +52,4 @@ module test_success;
 
         $display("TEST TEST TEST");
     end
+endmodule
