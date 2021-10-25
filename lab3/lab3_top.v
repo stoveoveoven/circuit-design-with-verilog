@@ -7,8 +7,8 @@ module lab3_top(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
 
     wire [4:0] stateToLED;
 
-    stateMachine(SW[3:0], ~KEY[0], ~KEY[3], stateToLED);
-    HEXDisplay(stateToLED, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
+    stateMachine lock(SW[3:0], ~KEY[0], ~KEY[3], stateToLED);
+    HEXDisplay SWtoHEX(stateToLED, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 endmodule
 
 //State machine for numerical inputs
@@ -36,6 +36,7 @@ module stateMachine(in, clk, rst, out);
     always@(posedge clk)begin
         if(rst)begin
             state = `A;
+            out = {1'b0, in};
         end
         else begin
             if(state == 4'b0000 || state == 4'b1111) begin
@@ -111,21 +112,21 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
         else begin
             hex5 = 7'b0000000;
             casex(in)
-                4'b01010: begin
+                5'b01010: begin
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
                     hex1 = `letO;
                     hex0 = `letR;
                 end
-                4'b01011: begin
+                5'b01011: begin
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
                     hex1 = `letO;
                     hex0 = `letR;
                 end
-                4'b011XX: begin
+                5'b011XX: begin
                     hex4 = `letE;
                     hex3 = `letR;
                     hex2 = `letR;
@@ -138,16 +139,16 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
                     hex2 = 7'b0000000;
                     hex1 = 7'b0000000;
                     case(in)
-                        4'b00000: hex0 = `zero;
-                        4'b00001: hex0 = `one;
-                        4'b00010: hex0 = `two;
-                        4'b00011: hex0 = `three;
-                        4'b00100: hex0 = `four;
-                        4'b00101: hex0 = `five;
-                        4'b00110: hex0 = `six;
-                        4'b00111: hex0 = `seven;
-                        4'b01000: hex0 = `eight;
-                        4'b01001: hex0 = `nine;
+                        5'b00000: hex0 = `zero;
+                        5'b00001: hex0 = `one;
+                        5'b00010: hex0 = `two;
+                        5'b00011: hex0 = `three;
+                        5'b00100: hex0 = `four;
+                        5'b00101: hex0 = `five;
+                        5'b00110: hex0 = `six;
+                        5'b00111: hex0 = `seven;
+                        5'b01000: hex0 = `eight;
+                        5'b01001: hex0 = `nine;
                         default: hex0 = 7'b0000000;
                     endcase
                 end
