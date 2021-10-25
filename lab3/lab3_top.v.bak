@@ -12,21 +12,21 @@ module lab3_top(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
 endmodule
 
 //State machine for numerical inputs
-`define A 4'b0001
-`define B 4'b0010
-`define C 4'b0011
-`define D 4'b0100
-`define E 4'b0101
-`define F 4'b0110
+`define A 4b'0001
+`define B 4b'0010
+`define C 4b'0011
+`define D 4b'0100
+`define E 4b'0101
+`define F 4b'0110
 
-`define Abad 4'b1001
-`define Bbad 4'b1010
-`define Cbad 4'b1011
-`define Dbad 4'b1100
-`define Ebad 4'b1101
+`define Abad 4b'1001
+`define Bbad 4b'1010
+`define Cbad 4b'1011
+`define Dbad 4b'1100
+`define Ebad 4b'1101
 
-`define unlocked 4'b0000
-`define failed 4'b1111
+`define unlocked 4b'0000
+`define failed 4b'1111
 module stateMachine(in, clk, rst, out);
     input clk, rst;
     input [3:0] in;
@@ -38,18 +38,18 @@ module stateMachine(in, clk, rst, out);
             state = A;
         end
         else begin
-            if(state == 4'b0000 || state == 4'b1111) begin
+            if(state == 4b'0000 || state == 4b'1111)begin
                 out = {1b'1, state};
             end
             else begin
                 out = {1b'0, in};
                 case(state)
-                    `A: state = (in == 4'b0100) ? `B : `Abad;
-                    `B: state = (in == 4'b1000) ? `C : `Bbad;
-                    `C: state = (in == 4'b0011) ? `D : `Cbad;
-                    `D: state = (in == 4'b1000) ? `E : `Dbad;
-                    `E: state = (in == 4'b0001) ? `F : `Ebad;
-                    `F: state = (in == 4'b0101) ? `unlocked : `failed;
+                    `A: state = (in == 4b'0100) ? `B : `Abad;
+                    `B: state = (in == 4b'1000) ? `C : `Bbad;
+                    `C: state = (in == 4b'0011) ? `D : `Cbad;
+                    `D: state = (in == 4b'1000) ? `E : `Dbad;
+                    `E: state = (in == 4b'0001) ? `F : `Ebad;
+                    `F: state = (in == 4b'0101) ? `unlocked : `failed;
                     `Abad: state = `Bbad;
                     `Bbad: state = `Cbad;
                     `Cbad: state = `Dbad;
@@ -63,26 +63,26 @@ module stateMachine(in, clk, rst, out);
 endmodule
 
 //CL block for input to LED display
-`define zero 7'b1111110
-`define one 7'b0000110
-`define two 7'b1101101
-`define three 7'b1111001
-`define four 7'b0110011
-`define five 7'b1011011
-`define six 7'b1011111
-`define seven 7'b1110000
-`define eight 7'b1111111
-`define nine 7'b1110011
+`define zero 7b'1111110
+`define one 7b'0000110
+`define two 7b'1101101
+`define three 7b'1111001
+`define four 7b'0110011
+`define five 7b'1011011
+`define six 7b'1011111
+`define seven 7b'1110000
+`define eight 7b'1111111
+`define nine 7b'1110011
 
-`define letE 7'b1001111
-`define letO 7'b0011101
-`define letR 7'b0000101
-`define letC 7'b1001110
-`define letL 7'b0001110
-`define letS 7'b1011011
-`define letD 7'b0111101
-`define letP 7'b1100111
-`define letN 7'b0010101
+`define letE 7b'1001111
+`define letO 7b'0011101
+`define letR 7b'0000101
+`define letC 7b'1001110
+`define letL 7b'0001110
+`define letS 7b'1011011
+`define letD 7b'0111101
+`define letP 7b'1100111
+`define letN 7b'0010101
 module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
     input [4:0] in;
     output [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
@@ -91,8 +91,8 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
         if(in[4] == 1)begin
             case(in)
                 5b'10000:
-                    hex5 = 7'b0000000;
-                    hex4 = 7'b0000000;
+                    hex5 = 7b'0000000;
+                    hex4 = 7b'0000000;
                     hex3 = `letO;
                     hex2 = `letP;
                     hex1 = `letE;
@@ -107,7 +107,7 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
             endcase
         end
         else begin
-            hex5 = 7'b0000000;
+            hex5 = 7b'0000000;
             casex(in)
                 4b'01010: begin
                     hex4 = `letE;
@@ -131,22 +131,22 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
                     hex0 = `letR;
                 end
                 default: begin
-                    hex4 = 7'b0000000;
-                    hex3 = 7'b0000000;
-                    hex2 = 7'b0000000;
-                    hex1 = 7'b0000000;
+                    hex4 = 7b'0000000;
+                    hex3 = 7b'0000000;
+                    hex2 = 7b'0000000;
+                    hex1 = 7b'0000000;
                     case(in)
-                        4'b00000: hex0 = `zero;
-                        4'b00001: hex0 = `one;
-                        4'b00010: hex0 = `two;
-                        4'b00011: hex0 = `three;
-                        4'b00100: hex0 = `four;
-                        4'b00101: hex0 = `five;
-                        4'b00110: hex0 = `six;
-                        4'b00111: hex0 = `seven;
-                        4'b01000: hex0 = `eight;
-                        4'b01001: hex0 = `nine;
-                        default: hex0 = 7'b0000000;
+                        4b'00000: hex0 = `zero;
+                        4b'00001: hex0 = `one;
+                        4b'00010: hex0 = `two;
+                        4b'00011: hex0 = `three;
+                        4b'00100: hex0 = `four;
+                        4b'00101: hex0 = `five;
+                        4b'00110: hex0 = `six;
+                        4b'00111: hex0 = `seven;
+                        4b'01000: hex0 = `eight;
+                        4b'01001: hex0 = `nine;
+                        default: hex0 = 7b'0000000;
                     endcase
                 end
             endcase
