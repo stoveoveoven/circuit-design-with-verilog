@@ -12,23 +12,22 @@ module lab3_top(SW,KEY,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5,LEDR);
 endmodule
 
 //State machine for numerical inputs
+`define A 4b'0001
+`define B 4b'0010
+`define C 4b'0011
+`define D 4b'0100
+`define E 4b'0101
+`define F 4b'0110
+
+`define Abad 4b'1001
+`define Bbad 4b'1010
+`define Cbad 4b'1011
+`define Dbad 4b'1100
+`define Ebad 4b'1101
+
+`define unlocked 4b'0000
+`define failed 4b'1111
 module stateMachine(in, clk, rst, out);
-    `define A 4b'0001
-    `define B 4b'0010
-    `define C 4b'0011
-    `define D 4b'0100
-    `define E 4b'0101
-    `define F 4b'0110
-
-    `define Abad 4b'1001
-    `define Bbad 4b'1010
-    `define Cbad 4b'1011
-    `define Dbad 4b'1100
-    `define Ebad 4b'1101
-
-    `define unlocked 4b'0000
-    `define failed 4b'1111
-    
     input clk, rst;
     input [3:0] in;
     output reg [4:0] out;
@@ -64,28 +63,27 @@ module stateMachine(in, clk, rst, out);
 endmodule
 
 //CL block for input to LED display
+`define zero 7b'1111110
+`define one 7b'0000110
+`define two 7b'1101101
+`define three 7b'1111001
+`define four 7b'0110011
+`define five 7b'1011011
+`define six 7b'1011111
+`define seven 7b'1110000
+`define eight 7b'1111111
+`define nine 7b'1110011
+
+`define letE 7b'1001111
+`define letO 7b'0011101
+`define letR 7b'0000101
+`define letC 7b'1001110
+`define letL 7b'0001110
+`define letS 7b'1011011
+`define letD 7b'0111101
+`define letP 7b'1100111
+`define letN 7b'0010101
 module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
-    `define zero 7b'1111110
-    `define one 7b'0000110
-    `define two 7b'1101101
-    `define three 7b'1111001
-    `define four 7b'0110011
-    `define five 7b'1011011
-    `define six 7b'1011111
-    `define seven 7b'1110000
-    `define eight 7b'1111111
-    `define nine 7b'1110011
-
-    `define letE 7b'1001111
-    `define letO 7b'0011101
-    `define letR 7b'0000101
-    `define letC 7b'1001110
-    `define letL 7b'0001110
-    `define letS 7b'1011011
-    `define letD 7b'0111101
-    `define letP 7b'1100111
-    `define letN 7b'0010101
-
     input [4:0] in;
     output [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
 
