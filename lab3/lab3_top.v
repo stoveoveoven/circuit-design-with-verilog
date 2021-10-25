@@ -35,7 +35,7 @@ module stateMachine(in, clk, rst, out);
 
     always@(posedge clk)begin
         if(rst)begin
-            state = A;
+            state = `A;
         end
         else begin
             if(state == 4'b0000 || state == 4'b1111) begin
@@ -85,7 +85,7 @@ endmodule
 `define letN 7'b0010101
 module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
     input [4:0] in;
-    output [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
+    output reg [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
 
     always @(in) begin
         if(in[4] == 1)begin
