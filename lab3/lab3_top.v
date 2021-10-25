@@ -62,26 +62,28 @@ module stateMachine(in, clk, rst, out);
 endmodule
 
 //CL block for input to LED display
-`define zero 7'b1111110
-`define one 7'b0000110
-`define two 7'b1101101
-`define three 7'b1111001
-`define four 7'b0110011
-`define five 7'b1011011
-`define six 7'b1011111
-`define seven 7'b1110000
-`define eight 7'b1111111
-`define nine 7'b1110011
+`define zero 7'b0000001
+`define one 7'b1111001
+`define two 7'b0010010
+`define three 7'b0000110
+`define four 7'b1001100
+`define five 7'b0100100
+`define six 7'b0100000
+`define seven 7'b0001111
+`define eight 7'b0000000
+`define nine 7'b0001100
 
-`define letE 7'b1001111
-`define letO 7'b0011101
-`define letR 7'b0000101
-`define letC 7'b1001110
-`define letL 7'b0001110
-`define letS 7'b1011011
-`define letD 7'b0111101
-`define letP 7'b1100111
-`define letN 7'b0010101
+`define letE 7'b0110000
+`define letO 7'b1100010
+`define letR 7'b1111010
+`define letC 7'b0110001
+`define letL 7'b1110001
+`define letS 7'b0100100
+`define letD 7'b1000010
+`define letP 7'b0011000
+`define letN 7'b1101010
+
+`define OFF 7'b1111111
 module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
     input [4:0] in;
     output reg [6:0] hex0, hex1, hex2, hex3, hex4, hex5;
@@ -90,8 +92,8 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
         if(in[4] == 1)begin
             case(in)
                 5'b10000: begin
-                    hex5 = 7'b0000000;
-                    hex4 = 7'b0000000;
+                    hex5 = `OFF;
+                    hex4 = `OFF;
                     hex3 = `letO;
                     hex2 = `letP;
                     hex1 = `letE;
@@ -108,7 +110,7 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
             endcase
         end
         else begin
-            hex5 = 7'b0000000;
+            hex5 = `OFF;
             casex(in)
                 5'b01010: begin
                     hex4 = `letE;
@@ -132,10 +134,10 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
                     hex0 = `letR;
                 end
                 default: begin
-                    hex4 = 7'b0000000;
-                    hex3 = 7'b0000000;
-                    hex2 = 7'b0000000;
-                    hex1 = 7'b0000000;
+                    hex4 = `OFF;
+                    hex3 = `OFF;
+                    hex2 = `OFF;
+                    hex1 = `OFF;
                     case(in)
                         5'b00000: hex0 = `zero;
                         5'b00001: hex0 = `one;
@@ -147,7 +149,7 @@ module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
                         5'b00111: hex0 = `seven;
                         5'b01000: hex0 = `eight;
                         5'b01001: hex0 = `nine;
-                        default: hex0 = 7'b0000000;
+                        default: hex0 = `OFF;
                     endcase
                 end
             endcase
