@@ -62,26 +62,26 @@ module stateMachine(in, clk, rst, out);
 endmodule
 
 //CL block for input to LED display
-`define zero 7'b0000001
-`define one 7'b1111001
-`define two 7'b0010010
-`define three 7'b0000110
-`define four 7'b1001100
-`define five 7'b0100100
-`define six 7'b0100000
-`define seven 7'b0001111
+`define zero 7'b1000000
+`define one 7'b1001111
+`define two 7'b0100100
+`define three 7'b0110000
+`define four 7'b0011001
+`define five 7'b0010010
+`define six 7'b0000010
+`define seven 7'b1111000
 `define eight 7'b0000000
-`define nine 7'b0001100
+`define nine 7'b0011000
 
-`define letE 7'b0110000
-`define letO 7'b1100010
-`define letR 7'b1111010
-`define letC 7'b0110001
-`define letL 7'b1110001
-`define letS 7'b0100100
-`define letD 7'b1000010
-`define letP 7'b0011000
-`define letN 7'b1101010
+`define letE 7'b0000110
+`define letO 7'b0100011
+`define letR 7'b0101111
+`define letC 7'b1000110
+`define letL 7'b1000111
+`define letS 7'b0010010
+`define letD 7'b0100001
+`define letP 7'b0001100
+`define letN 7'b0101011
 
 `define OFF 7'b1111111
 module HEXDisplay(in, hex0, hex1, hex2, hex3, hex4, hex5);
