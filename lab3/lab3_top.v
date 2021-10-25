@@ -39,25 +39,23 @@ module stateMachine(in, clk, rst, out);
             out = {1'b0, in};
         end
         else begin
-            if(state == 4'b0000 || state == 4'b1111) begin
-                out = {1'b1, state};
-            end
-            else begin
-                out = {1'b0, in};
-                case(state)
-                    `A: state = (in == 4'b0100) ? `B : `Abad;
-                    `B: state = (in == 4'b1000) ? `C : `Bbad;
-                    `C: state = (in == 4'b0011) ? `D : `Cbad;
-                    `D: state = (in == 4'b1000) ? `E : `Dbad;
-                    `E: state = (in == 4'b0001) ? `F : `Ebad;
-                    `F: state = (in == 4'b0101) ? `unlocked : `failed;
-                    `Abad: state = `Bbad;
-                    `Bbad: state = `Cbad;
-                    `Cbad: state = `Dbad;
-                    `Dbad: state = `Ebad;
-                    `Ebad: state = `failed;
-                    `failed: state = `failed;
-                endcase
+            out = {1'b0, in};
+            case(state)
+                `A: state = (in == 4'b0100) ? `B : `Abad;
+                `B: state = (in == 4'b1000) ? `C : `Bbad;
+                `C: state = (in == 4'b0011) ? `D : `Cbad;
+                `D: state = (in == 4'b1000) ? `E : `Dbad;
+                `E: state = (in == 4'b0001) ? `F : `Ebad;
+                `F: state = (in == 4'b0101) ? `unlocked : `failed;
+                `Abad: state = `Bbad;
+                `Bbad: state = `Cbad;
+                `Cbad: state = `Dbad;
+                `Dbad: state = `Ebad;
+                `Ebad: state = `failed;
+                `failed: state = `failed;
+            endcase	
+	    if(state == 4'b0000 || state == 4'b1111) begin
+            out = {1'b1, state};
             end
         end
     end
