@@ -1,0 +1,11 @@
+Steven
+- wrote all tests in testbench
+- contributed bug fixes to main implementation
+- generated gate level simulation and both waveforms
+
+Muhan
+- 
+
+
+Collaborative efforts
+- main implementation about 80-20 split 
