@@ -1,11 +1,10 @@
-Steven
+Steven 
 - wrote all tests in testbench
 - contributed bug fixes to main implementation
 - generated gate level simulation and both waveforms
 
 Muhan
-- 
-
-
-Collaborative efforts
-- main implementation about 80-20 split 
+- Added comments for main implementation
+- Initial implementation of all modules in verilog
+- contributed bug fixes to main implementation
+- General project organization with github
