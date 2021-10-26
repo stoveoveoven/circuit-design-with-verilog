@@ -1,3 +1,5 @@
+//`timescale 1 ps/ 1 ps // uncomment for gate level sim
+
 module testFSM;
 `define A 4'b0100
 `define B 4'b1000
@@ -74,7 +76,6 @@ module testFSM;
         // MUST INTERPRET BINARY RESULTS
         $display("%b %b %b %b %b %b",HEX0,HEX1,HEX2,HEX3,HEX4,HEX5);  
 
-
-	$stop;
+	$stop;  
     end
 endmodule
