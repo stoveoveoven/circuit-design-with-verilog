@@ -1,26 +1,25 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate {/test_success/SW[3]}
-add wave -noupdate {/test_success/SW[2]}
-add wave -noupdate {/test_success/SW[1]}
-add wave -noupdate {/test_success/SW[0]}
-add wave -noupdate {/test_success/KEY[3]}
-add wave -noupdate {/test_success/KEY[0]}
-add wave -noupdate /test_success/HEX0
-add wave -noupdate /test_success/HEX1
-add wave -noupdate /test_success/HEX2
-add wave -noupdate /test_success/HEX3
-add wave -noupdate /test_success/HEX4
-add wave -noupdate /test_success/HEX5
-add wave -noupdate /test_success/DUT/lock/clk
-add wave -noupdate /test_success/DUT/lock/rst
-add wave -noupdate /test_success/DUT/lock/in
-add wave -noupdate /test_success/DUT/lock/out
-add wave -noupdate /test_success/DUT/lock/state
+add wave -noupdate {/testFSM/KEY[3]}
+add wave -noupdate {/testFSM/KEY[0]}
+add wave -noupdate {/testFSM/SW[3]}
+add wave -noupdate {/testFSM/SW[2]}
+add wave -noupdate {/testFSM/SW[1]}
+add wave -noupdate {/testFSM/SW[0]}
+add wave -noupdate /testFSM/DUT/lock/clk
+add wave -noupdate /testFSM/DUT/lock/rst
+add wave -noupdate /testFSM/DUT/lock/in
+add wave -noupdate /testFSM/DUT/lock/state
+add wave -noupdate /testFSM/HEX0
+add wave -noupdate /testFSM/HEX1
+add wave -noupdate /testFSM/HEX2
+add wave -noupdate /testFSM/HEX3
+add wave -noupdate /testFSM/HEX4
+add wave -noupdate /testFSM/HEX5
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {0 ps} 0}
-quietly wave cursor active 0
-configure wave -namecolwidth 195
+WaveRestoreCursors {{Cursor 1} {2 ps} 0}
+quietly wave cursor active 1
+configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
 configure wave -justifyvalue left
 configure wave -signalnamewidth 0
@@ -34,4 +33,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {0 ps} {77 ps}
+WaveRestoreZoom {0 ps} {166 ps}
