@@ -1,2 +1,3 @@
-# CPEN211-Verilog
+# CPEN211-Labs
+
  
