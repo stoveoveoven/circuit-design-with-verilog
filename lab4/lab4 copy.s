@@ -8,9 +8,9 @@ binary_search:
          */
 
         mov r4, #0 // startindex
-        sub r5, r3,#1 // endindex
+        sub r5, r2,#1 // endindex
         mov r6, r5,lsr #1 // middleindex
-        RSB r7,#1,#0 // keyindex
+        mov r7, #-1 // keyindex
         mov r8, #1 // numiters
 
 loop:
@@ -18,7 +18,7 @@ loop:
 
         bge Exit // first if cond, if startindex big then break
 
-        ldr r9,[r0,r6] // get number at middle index
+        ldr r9,[r0,r6, lsl #2] // get number at middle index
 
         cmp r9,r1
         bgt Front // if the number in middle is bigger than key check front
@@ -39,5 +39,4 @@ helper:
         add r8,r8,#1
         b loop
 Exit:
-        str r7, r0
-
+        str r7, [r0]
