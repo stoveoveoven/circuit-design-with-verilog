@@ -1,48 +1,35 @@
         .globl binary_search
-        
 binary_search:
+        mov r4, #0 // startindex
+        sub r5, r2,#1 // endindex
+        mov r6, r5,lsr #1 // middleindex
+        mov r7, #-1 // keyindex
+        mov r8, #1 // numiters
 
-        //preloop value assignment
-        str #0, r4                      //StartIndex
-        sub r9, r2, #1                  
-        str r9, r5                      //EndIndex
-        mov r6, lsr r5, #1              //MiddleIndex
-        mvn r7, #0                      //KeyIndex
-        str #1, r8                      //NumIters
+loop:
+        cmp r4,r5
+        bgt Exit // first if cond, if startindex big then break
 
-Loop:   
-        cmp r7, NEG #0                  //condition for while loop to continue
-        bne Exit                        //go to exit if startIndex != -1
-        
-        cmp r4, r5                      //compare startindex and endindex
-        bgt Exit                        //go to exit if start > end
+        ldr r9,[r0,r6, lsl #2] // get number at middle index
+        cmp r9,r1
+        bgt Front // if the number in middle is bigger than key check front
+        blt Back // if the number in the middle is less than key check back
 
-        ldr r9, [r0, r6, lsl #2]        //load numbers[middleIndex] to r9
-        cmp r9, r1                      //compare r9 with key
-        bgt Front                       //search the front if r9 > key
-        blt Back                        //search the back if r9 < key
-        str r1, r7                      //if equal, assign keyIndex = middleIndex
-
-Front:                                  //branch that searches front half
-        sub r12, r6, #1
-        str r12, r5
-
-Back:                                   //branch that searches back half
-        add r12, r6, #1
-        str r12, r4
-
-        ldr r10, NEG r8                 //save negative of numIter as r10       //POTENTIAL PROBLEM WITH NEG r8
-        str r10, [r0, r6, lsl #2]       //save numbers[middleIndex] as r10
-
-        sub r11, r5, r4                 //endIndex - startIndex
-        add r9, lsr r11, #1             //startIndex + (r11)/2
-        str r9, r6                      //save r9 as middle index
-
-        add r8, r8, #1                  //increment numIter
-        
-        B   Loop
-Exit:   
-        str r7, r0                      //return keyIndex
-
-
-        
+        mov r7, r6 // else number at middle is the key
+	b Exit
+Front:
+        sub r5,r6,#1 // reassign endindex
+        b helper
+Back:
+        add r4,r6,#1 // reassign startindex
+        b helper
+helper:
+        rsb r9, r8,#0 // negative numiters
+        str r9,[r0,r6,LSL #2] // store the neg iter at middleindex because aesthetic
+        sub r10,r5,r4 // helper calc
+        add r6,r4,r10,LSR #1 // redefine middle index
+        add r8,r8,#1 // increment
+        b loop
+Exit:
+        mov r0,r7 // set r0 to key as well
+        mov pc, lr // necessary snippet
