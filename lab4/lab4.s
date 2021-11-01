@@ -34,5 +34,7 @@ helper:
         bne Exit
 	b loop
 Exit:
+        rsb r9, r8,#0 // negative numiters
+        str r9,[r0,r6,LSL #2] // store the neg iter at middleindex because aesthetic
         mov r0,r7 // set r0 to key as well
         mov pc, lr // necessary snippet
