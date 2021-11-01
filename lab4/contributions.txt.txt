@@ -1,4 +1,8 @@
 Alan Li
-
+- First draft of lab4.s 
+- Interpreting branching of C code and creating Branch diagram
 
 Steven Shao
+- Final copy of lab4.s 
+- Debugging and fixing draft copy of lab4.s 
+- Testing on De1-Soc
