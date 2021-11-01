@@ -16,7 +16,7 @@ loop:
         blt Back // if the number in the middle is less than key check back
 
         mov r7, r6 // else number at middle is the key
-	b Exit
+	b helper
 Front:
         sub r5,r6,#1 // reassign endindex
         b helper
@@ -29,7 +29,10 @@ helper:
         sub r10,r5,r4 // helper calc
         add r6,r4,r10,LSR #1 // redefine middle index
         add r8,r8,#1 // increment
-        b loop
+	
+	cmp r7,#-1
+        bne Exit
+	b loop
 Exit:
         mov r0,r7 // set r0 to key as well
         mov pc, lr // necessary snippet
