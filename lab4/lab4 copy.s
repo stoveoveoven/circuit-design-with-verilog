@@ -25,6 +25,7 @@ loop:
         blt Back // if the number in the middle is less than key check back
 
         mov r7, r6
+	b Exit
 Front:
         sub r5,r6,#1 // reassign endindex
         b helper
@@ -39,4 +40,5 @@ helper:
         add r8,r8,#1
         b loop
 Exit:
-        str r7, [r0]
+        mov r0,r7
+        mov pc, lr
