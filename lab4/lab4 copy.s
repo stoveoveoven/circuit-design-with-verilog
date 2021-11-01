@@ -16,7 +16,7 @@ binary_search:
 loop:
         cmp r4,r5
 
-        bge Exit // first if cond, if startindex big then break
+        bgt Exit // first if cond, if startindex big then break
 
         ldr r9,[r0,r6, lsl #2] // get number at middle index
 
