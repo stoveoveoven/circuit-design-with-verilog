@@ -1,44 +1,3 @@
-//Standard multiplexer
-module MUX(zero, one, sel, out);
-    parameter width = 1;
-    input [width-1:0] zero, one;
-    output [width-1:0] out;
-
-    out = sel ? one : zero;
-endmodule
-
-//a register with load enable
-module regLoad(in, load, clk, out);
-    parameter size = 16;
-    input [size-1:0] in;
-    input load;
-    output [size-1:0] out;
-
-    wire[size-1:0] muxToDFF, outToMux;
-
-    MUX  #(size) myMUX(outToMux, in, load, muxToDFF);
-    vDFF #(size) myDFF(muxToDFF, out, clk);
-endmodule
-
-module Dec38(in, out)
-    input [2:0] in;
-    output [7:0] out;
-
-    always@(in)begin
-        case(in)
-            3'b000 : out = 8'b00000001;
-            3'b001 : out = 8'b00000010;
-            3'b010 : out = 8'b00000100;
-            3'b011 : out = 8'b00001000;
-            3'b100 : out = 8'b00010000;
-            3'b101 : out = 8'b00100000;
-            3'b110 : out = 8'b01000000;
-            3'b111 : out = 8'b10000000;
-            default: out = 8'b00000000;
-        endcase
-    end
-endmodule
-
 // INSTRUCTIONS:
 //
 // You can use this file to demo your Lab5 on your DE1-SoC.  You should NOT 
@@ -185,7 +144,7 @@ module input_iface(clk, SW, datapath_in, write, vsel, loada, loadb, asel, bsel,
   assign LEDR = sel_sw ? ctrl_sw : {1'b0, datapath_in[7:0]};  
 endmodule         
 
-
+//Standard vDFF
 module vDFF(clk,D,Q);
   parameter n=1;
   input clk;
@@ -195,6 +154,48 @@ module vDFF(clk,D,Q);
 
   always @(posedge clk)
     Q <= D;
+endmodule
+
+//Standard multiplexer
+module MUX(zero, one, sel, out);
+    parameter width = 1;
+    input [width-1:0] zero, one;
+    output [width-1:0] out;
+
+    out = sel ? one : zero;
+endmodule
+
+//a register with load enable
+module regLoad(in, load, clk, out);
+    parameter size = 16;
+    input [size-1:0] in;
+    input load;
+    output [size-1:0] out;
+
+    wire[size-1:0] muxToDFF, outToMux;
+
+    MUX  #(size) myMUX(outToMux, in, load, muxToDFF);
+    vDFF #(size) myDFF(muxToDFF, out, clk);
+endmodule
+
+//Standard 3:8 decoder
+module Dec38(in, out)
+    input [2:0] in;
+    output [7:0] out;
+
+    always@(in)begin
+        case(in)
+            3'b000 : out = 8'b00000001;
+            3'b001 : out = 8'b00000010;
+            3'b010 : out = 8'b00000100;
+            3'b011 : out = 8'b00001000;
+            3'b100 : out = 8'b00010000;
+            3'b101 : out = 8'b00100000;
+            3'b110 : out = 8'b01000000;
+            3'b111 : out = 8'b10000000;
+            default: out = 8'b00000000;
+        endcase
+    end
 endmodule
 
 
