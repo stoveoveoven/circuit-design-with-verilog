@@ -160,28 +160,28 @@ endmodule
 module MUX(zero, one, sel, out);
     parameter width = 1;
     input [width-1:0] zero, one;
+    input sel;
     output [width-1:0] out;
 
-    out = sel ? one : zero;
+    assign out = sel ? one : zero;
 endmodule
 
 //a register with load enable
 module regLoad(in, load, clk, out);
-    parameter size = 16;
-    input [size-1:0] in;
-    input load;
-    output [size-1:0] out;
+    input [15:0] in;
+    input load, clk;
+    output [15:0] out;
 
-    wire[size-1:0] muxToDFF, outToMux;
+    wire[15:0] muxToDFF, outToMux;
 
-    MUX  #(size) myMUX(outToMux, in, load, muxToDFF);
-    vDFF #(size) myDFF(muxToDFF, out, clk);
+    MUX  #(16) myMUX(outToMux, in, load, muxToDFF);
+    vDFF #(16) myDFF(muxToDFF, out, clk);
 endmodule
 
 //Standard 3:8 decoder
-module Dec38(in, out)
+module Dec38(in, out);
     input [2:0] in;
-    output [7:0] out;
+    output reg [7:0] out;
 
     always@(in)begin
         case(in)
@@ -208,25 +208,28 @@ endmodule
 
 module sseg(in, segs);
     input [3:0] in;
-    output [6:0] segs;
+    output reg [6:0] segs;
 
-    case(in)
-        4'b0000 : segs = 7'b1000000;
-        4'b0001 : segs = 7'b1111001;
-        4'b0010 : segs = 7'b0100100;
-        4'b0011 : segs = 7'b0110000;
-        4'b0100 : segs = 7'b0011001;
-        4'b0101 : segs = 7'b0010010;
-        4'b0110 : segs = 7'b0000010;
-        4'b0111 : segs = 7'b0111000;
-        4'b1000 : segs = 7'b0000000;
-        4'b1001 : segs = 7'b0011000;
-        4'b1010 : segs = 7'b0001000;
-        4'b1011 : segs = 7'b0000011;
-        4'b1100 : segs = 7'b1000110;
-        4'b1101 : segs = 7'b0100001;
-        4'b1110 : segs = 7'b0000110;
-        4'b1111 : segs = 7'b0001110;
-    endcase
+    always@(in)begin
+        case(in)
+            4'b0000 : segs = 7'b1000000;
+            4'b0001 : segs = 7'b1111001;
+            4'b0010 : segs = 7'b0100100;
+            4'b0011 : segs = 7'b0110000;
+            4'b0100 : segs = 7'b0011001;
+            4'b0101 : segs = 7'b0010010;
+            4'b0110 : segs = 7'b0000010;
+            4'b0111 : segs = 7'b0111000;
+            4'b1000 : segs = 7'b0000000;
+            4'b1001 : segs = 7'b0011000;
+            4'b1010 : segs = 7'b0001000;
+            4'b1011 : segs = 7'b0000011;
+            4'b1100 : segs = 7'b1000110;
+            4'b1101 : segs = 7'b0100001;
+            4'b1110 : segs = 7'b0000110;
+            4'b1111 : segs = 7'b0001110;
+        endcase
+    end
+    
 endmodule
 
