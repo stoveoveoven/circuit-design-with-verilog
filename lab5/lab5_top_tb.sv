@@ -14,7 +14,7 @@ module lab5_top_tb;
   end
 
   initial begin
-    // ADD YOUR TEST SCRIPT HERE
+    
     $stop;
   end
 endmodule

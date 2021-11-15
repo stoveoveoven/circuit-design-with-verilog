@@ -27,7 +27,7 @@ module regfile_tb;
             $error("FAIL");
             err = 1'b1;
         end
-        assert (regfile_tb.DUT.r3 == 16'd42) $display("PASS");
+        assert (regfile_tb.DUT.R3 == 16'd42) $display("PASS");
         else begin
             $error("FAIL, 42 not stored in r3");
             err = 1'b1;
@@ -107,7 +107,7 @@ module regfile_tb;
 
         #4;
 
-        assert (regfile_tb.DUT.r2 == 16'd420) $display("PASS");// 420 stored at r2
+        assert (regfile_tb.DUT.R2 == 16'd420) $display("PASS");// 420 stored at r2
         else begin
             $error("FAIL, 420 not stored at r2");
             err = 1'b1;
@@ -119,6 +119,6 @@ module regfile_tb;
         end
 
         #4; // 40s
-	$stop;
+	// $stop;
     end
 endmodule
