@@ -11,14 +11,14 @@ module regfile (data_in, writenum, write, readnum, clk, data_out);
     assign load = regSel & {8{write}};
 
     wire[15:0] r0, r1, r2, r3, r4, r5, r6, r7;
-    regLoad reg0(data_in, load[0], clk, r0);
-    regLoad reg1(data_in, load[1], clk, r1);
-    regLoad reg2(data_in, load[2], clk, r2);
-    regLoad reg3(data_in, load[3], clk, r3);
-    regLoad reg4(data_in, load[4], clk, r4);
-    regLoad reg5(data_in, load[5], clk, r5);
-    regLoad reg6(data_in, load[6], clk, r6);
-    regLoad reg7(data_in, load[7], clk, r7);
+    regLoad #(16) reg0(data_in, load[0], clk, r0);
+    regLoad #(16) reg1(data_in, load[1], clk, r1);
+    regLoad #(16) reg2(data_in, load[2], clk, r2);
+    regLoad #(16) reg3(data_in, load[3], clk, r3);
+    regLoad #(16) reg4(data_in, load[4], clk, r4);
+    regLoad #(16) reg5(data_in, load[5], clk, r5);
+    regLoad #(16) reg6(data_in, load[6], clk, r6);
+    regLoad #(16) reg7(data_in, load[7], clk, r7);
 
     wire[7:0] readSel;
     Dec38 readDec(readnum, readSel);
@@ -41,7 +41,7 @@ module MUX8bit16(ain, bin, cin, din, ein, fin, gin, hin, sel, out);
             8'b00100000 : out = fin;
             8'b01000000 : out = gin;
             8'b10000000 : out = hin;
-            default : out = 16'b1111111111111111;
+            default : out = {16{1'bx}};
         endcase  
     end
     

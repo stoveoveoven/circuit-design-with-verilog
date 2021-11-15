@@ -168,15 +168,16 @@ endmodule
 
 //a register with load enable
 module regLoad(in, load, clk, out);
-    input [15:0] in;
+    parameter n = 1;
+    input [n-1:0] in;
     input load, clk;
-    output [15:0] out;
+    output [n-1:0] out;
 
-    wire[15:0] muxToDFF, outToMux;
+    wire[n-1:0] muxToDFF, outToMux;
     assign outToMux = out; // could be problematic
 
-    MUX  #(16) myMUX(outToMux, in, load, muxToDFF);
-    vDFF #(16) myDFF(clk, muxToDFF, out);
+    MUX  #(n) myMUX(outToMux, in, load, muxToDFF);
+    vDFF #(n) myDFF(clk, muxToDFF, out);
 endmodule
 
 //Standard 3:8 decoder
