@@ -31,7 +31,7 @@ module MUX8bit16(ain, bin, cin, din, ein, fin, gin, hin, sel, out);
     input [7:0] sel;
     output reg [15:0] out;
 
-    always@(sel)begin
+    always@(*)begin
         case(sel)
             8'b00000001 : out = ain;
             8'b00000010 : out = bin;
