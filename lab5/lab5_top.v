@@ -173,9 +173,10 @@ module regLoad(in, load, clk, out);
     output [15:0] out;
 
     wire[15:0] muxToDFF, outToMux;
+    assign outToMux = out; // could be problematic
 
     MUX  #(16) myMUX(outToMux, in, load, muxToDFF);
-    vDFF #(16) myDFF(muxToDFF, out, clk);
+    vDFF #(16) myDFF(clk, muxToDFF, out);
 endmodule
 
 //Standard 3:8 decoder
