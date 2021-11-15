@@ -1,8 +1,8 @@
-module ALU(Ain, Bin, ALUop, out, Z_out);
+module ALU(Ain, Bin, ALUop, out, Z);
     input [15:0] Ain, Bin;
     input [1:0] ALUop;
     output reg [15:0] out;
-    output Z_out;
+    output Z;
 
     always@(*)begin
         case(ALUop)
@@ -13,5 +13,5 @@ module ALU(Ain, Bin, ALUop, out, Z_out);
         endcase
     end
 
-    assign Z_out = (out == 2'b00) ? 1'b1 : 1'b0;
+    assign Z = (out == 2'b00) ? 1'b1 : 1'b0;
 endmodule
