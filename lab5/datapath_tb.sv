@@ -58,7 +58,7 @@ module datapath_tb;
 
         readnum = 3'd0;
         #5;
-        assert (datapath_tb.DUT.U0.r0 == 16'd7) $display("PASS");
+        assert (datapath_tb.DUT.REGFILE.R0 == 16'd7) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -66,7 +66,7 @@ module datapath_tb;
 
         readnum = 3'd2;
         #5;
-        assert (datapath_tb.DUT.U0.r2 == 16'd16) $display("PASS");
+        assert (datapath_tb.DUT.REGFILE.R2 == 16'd16) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -74,7 +74,7 @@ module datapath_tb;
 
         readnum = 3'd1;
         #5;
-        assert (datapath_tb.DUT.U0.r1 == 16'd2) $display("PASS");
+        assert (datapath_tb.DUT.REGFILE.R1 == 16'd2) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -109,7 +109,7 @@ module datapath_tb;
         write = 1'b1;
         writenum = 3'd4;
         #10;
-        assert (datapath_tb.DUT.U0.r4 == {16{1'b1}}) $display("PASS");
+        assert (datapath_tb.DUT.REGFILE.R4 == {16{1'b1}}) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -125,7 +125,7 @@ module datapath_tb;
 
         readnum = 3'd3;
         #5;
-        assert (datapath_tb.DUT.U0.r3 == 16'd0) $display("PASS");
+        assert (datapath_tb.DUT.REGFILE.R3 == 16'd0) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;

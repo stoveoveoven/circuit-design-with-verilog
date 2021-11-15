@@ -43,7 +43,7 @@ module shifter_tb;
         end
 
         #5;
-        $stop;
+        // $stop;
     end
 
 endmodule

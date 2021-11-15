@@ -119,6 +119,6 @@ module regfile_tb;
         end
 
         #4; // 40s
-	$stop;
+	// $stop;
     end
 endmodule

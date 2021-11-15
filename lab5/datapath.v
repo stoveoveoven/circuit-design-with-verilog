@@ -12,7 +12,7 @@ module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loa
 
     MUX #(16) vMUX(data_loop, datapath_in, vsel, regFile_data_in);
 
-    regfile U0(regFile_data_in, writenum, write, readnum, clk, regFile_data_out);
+    regfile REGFILE(regFile_data_in, writenum, write, readnum, clk, regFile_data_out);
 
     regLoad #(16) regA(regFile_data_out, loada, clk, regA_out);
     regLoad #(16) regB(regFile_data_out, loadb, clk, shifter_in);
