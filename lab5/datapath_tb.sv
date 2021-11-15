@@ -58,15 +58,7 @@ module datapath_tb;
 
         readnum = 3'd0;
         #5;
-        assert (datapath_tb.DUT.regFile_data_out == 16'd7) $display("PASS");
-        else begin
-            $error("FAIL");
-            err = 1'b1;
-        end
-
-        readnum = 3'd1;
-        #5;
-        assert (datapath_tb.DUT.regFile_data_out == 16'd2) $display("PASS");
+        assert (datapath_tb.DUT.U0.r0 == 16'd7) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -74,12 +66,21 @@ module datapath_tb;
 
         readnum = 3'd2;
         #5;
-        assert (datapath_tb.DUT.regFile_data_out == 16'd16) $display("PASS");
+        assert (datapath_tb.DUT.U0.r2 == 16'd16) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
         end
 
+        readnum = 3'd1;
+        #5;
+        assert (datapath_tb.DUT.U0.r1 == 16'd2) $display("PASS");
+        else begin
+            $error("FAIL");
+            err = 1'b1;
+        end
+
+	    #5;
         // TEST FOR NEG 1
 
          // MOV R3, #0
@@ -88,8 +89,8 @@ module datapath_tb;
         write = 1'b1;
         vsel = 1'b1;
         #10;
-        // SUB R4,R3,R2 LSR#1
-        readnum = 3'd2;
+        // SUB R4,R3,R1 LSR#1
+        readnum = 3'd1;
         loadb = 1'b1;
         #10;
         loadb = 1'b0;
@@ -107,7 +108,8 @@ module datapath_tb;
         vsel = 1'b0;
         write = 1'b1;
         writenum = 3'd4;
-        assert (datapath_tb.DUT.datapath_out == {16{1'b1}}) $display("PASS");
+        #10;
+        assert (datapath_tb.DUT.U0.r4 == {16{1'b1}}) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -115,7 +117,7 @@ module datapath_tb;
 
         readnum = 3'd2;
         #5;
-        assert (datapath_tb.DUT.regFile_data_out == 16'd2) $display("PASS");
+        assert (datapath_tb.DUT.regFile_data_out == 16'd16) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
@@ -123,7 +125,7 @@ module datapath_tb;
 
         readnum = 3'd3;
         #5;
-        assert (datapath_tb.DUT.regFile_data_out == 16'd0) $display("PASS");
+        assert (datapath_tb.DUT.U0.r3 == 16'd0) $display("PASS");
         else begin
             $error("FAIL");
             err = 1'b1;
