@@ -12,33 +12,33 @@ module shifter_tb;
         
         in = 16'b1111000011001111;
         shift = 2'b00; #5;
-        assert (sout == 16'b1111000011001111) $display("PASS");
+        if (sout == 16'b1111000011001111) $display("PASS");
         else begin
-            $error("FAIL");
+            $display("FAIL");
             err = 1'b1;
         end
 
         in = 16'b1111000011001111;
         shift = 2'b01; #5;
-        assert (sout == 16'b1110000110011110) $display("PASS");
+        if (sout == 16'b1110000110011110) $display("PASS");
         else begin
-            $error("FAIL");
+            $display("FAIL");
             err = 1'b1;
         end
 
         in = 16'b1111000011001111;
         shift = 2'b10; #5;
-        assert (sout == 16'b0111100001100111) $display("PASS");
+        if (sout == 16'b0111100001100111) $display("PASS");
         else begin
-            $error("FAIL");
+            $display("FAIL");
             err = 1'b1;
         end
 
         in = 16'b1111000011001111;
         shift = 2'b11; #5;
-        assert (sout == 16'b1111100001100111) $display("PASS");
+        if (sout == 16'b1111100001100111) $display("PASS");
         else begin
-            $error("FAIL");
+            $display("FAIL");
             err = 1'b1;
         end
 
