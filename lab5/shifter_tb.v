@@ -3,7 +3,7 @@ module shifter_tb;
     reg[1:0]  shift;
     wire[15:0] sout;
 
-    shifter DUT(in, shift, sout);
+    shifter DUT(.in(in), .shift(shift), .sout(sout));
 
     reg err = 1'b0;
 

@@ -6,7 +6,10 @@ module ALU_tb;
 
     reg err = 1'b0;
 
-    ALU DUT(Ain, Bin, ALUop, out, Z);
+    ALU DUT (   .Ain(Ain),      .Bin(Bin), 
+                .ALUop(ALUop),  .out(out), 
+                .Z(Z)
+            );
 
     initial begin
         Ain = 16'd0;

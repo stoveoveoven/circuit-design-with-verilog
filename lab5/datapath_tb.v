@@ -7,7 +7,15 @@ module datapath_tb;
     wire [15:0] datapath_out;
     wire Z;
 
-    datapath DUT(clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loadc, loads, writenum, write, datapath_in, Z, datapath_out); // use named association kms
+    datapath DUT(   .clk(clk),      .readnum(readnum), 
+                    .vsel(vsel),    .loada(loada), 
+                    .loadb(loadb),  .shift(shift), 
+                    .asel(asel),    .bsel(bsel), 
+                    .ALUop(ALUop),  .loadc(loadc), 
+                    .loads(loads),  .writenum(writenum), 
+                    .write(write),  .datapath_in(datapath_in), 
+                    .Z_out(Z),          .datapath_out(datapath_out)
+                );
     reg err = 1'b0;
 
     initial begin

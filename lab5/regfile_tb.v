@@ -3,7 +3,10 @@ module regfile_tb;
     reg [2:0] writenum, readnum;
     reg clk, write;
     wire [15:0] data_out;
-    regfile DUT(data_in, writenum, write, readnum, clk, data_out);
+    regfile DUT (   .data_in(data_in),  .writenum(writenum), 
+                    .write(write),      .readnum(readnum), 
+                    .clk(clk),          .data_out(data_out)
+                );
 
     reg err = 1'b0; // required by criteria.
 
