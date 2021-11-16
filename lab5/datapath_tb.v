@@ -53,12 +53,19 @@ module datapath_tb;
         bsel = 1'b0;
         shift = 2'b01;
         loadc = 1'b1;
+        loads = 1'b1;
         #10;
         loadc = 1'b0;
+        loads = 1'b0;
         vsel = 1'b0;
         write = 1'b1;
         writenum = 3'd2;
         if (datapath_out == 16'd16) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        if (Z == 1'b0) $display("PASS");
         else begin
             $display("FAIL");
             err = 1'b1;
@@ -111,13 +118,21 @@ module datapath_tb;
         bsel = 1'b0;
         shift = 2'b10;
         loadc = 1'b1;
+        loads = 1'b1;
         #10;
         loadc = 1'b0;
+        loads = 1'b0;
         vsel = 1'b0;
         write = 1'b1;
         writenum = 3'd4;
         #10;
+        write = 1'b0;
         if (datapath_out == {16{1'b1}}) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        if (Z == 1'b0) $display("PASS");
         else begin
             $display("FAIL");
             err = 1'b1;
@@ -144,5 +159,66 @@ module datapath_tb;
             $display("FAIL");
             err = 1'b1;
         end
+
+        // TEST FOR 0 Z = 1
+
+         // MOV R5, #1
+        datapath_in = 16'd1;
+        writenum = 3'd5;
+        write = 1'b1;
+        vsel = 1'b1;
+        #10;
+        // ADD R3,R4,R5
+        readnum = 3'd5;
+        loadb = 1'b1;
+        #10;
+        loadb = 1'b0;
+        readnum = 3'd4;
+        loada = 1'b1;
+        #10;
+        loada = 1'b0;
+        ALUop = 2'b00;
+        asel = 1'b0;
+        bsel = 1'b0;
+        shift = 2'b00;
+        loadc = 1'b1;
+        loads = 1'b1;
+        #10;
+        loadc = 1'b0;
+        loads = 1'b0;
+        vsel = 1'b0;
+        write = 1'b1;
+        writenum = 3'd3;
+        #10;
+        if (datapath_out == {16{1'b0}}) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        if (Z == 1'b1) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        #5;
+        if (DUT.REGFILE.R4 == {16{1'b1}}) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        if (DUT.REGFILE.R3 == {16{1'b0}}) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        #5;
+        readnum = 3'd3;
+        #5;
+        if (DUT.REGFILE.R5 == 16'd1) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        #5;
     end
 endmodule
