@@ -109,20 +109,18 @@ module datapath_tb;
         write = 1'b1;
         writenum = 3'd4;
         #10;
+        if (datapath_out == {16{1'b1}}) $display("PASS");
+        else begin
+            $display("FAIL");
+            err = 1'b1;
+        end
+        #5;
         if (DUT.REGFILE.R4 == {16{1'b1}}) $display("PASS");
         else begin
             $display("FAIL");
             err = 1'b1;
         end
-
-        readnum = 3'd2;
         #5;
-        if (datapath_out == 16'd16) $display("PASS");
-        else begin
-            $display("FAIL");
-            err = 1'b1;
-        end
-
         readnum = 3'd3;
         #5;
         if (DUT.REGFILE.R3 == 16'd0) $display("PASS");

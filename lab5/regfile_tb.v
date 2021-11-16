@@ -22,33 +22,10 @@ module regfile_tb;
 
         #8; // writing are coordinated to clock
 
-        if (regfile_tb.DUT.regSel == 8'b00001000) $display("PASS");
-        else begin
-            $display("FAIL");
-            err = 1'b1;
-        end
-        if (regfile_tb.DUT.R3 == 16'd42) $display("PASS");
-        else begin
-            $display("FAIL, 42 not stored in r3");
-            err = 1'b1;
-        end
-
-        //Only one load enable input should be 1
-        if (regfile_tb.DUT.load[7:0] == 8'b00001000) $display("PASS");
-        else begin
-            $display("FAIL, only load[3] should be 1");
-            err = 1'b1;
-        end
         write = 1'b0;
         
         #2;
 
-        // If write is 0 all 8 load-enable signals are 0
-        if (regfile_tb.DUT.load[7:0] == 8'b00000000) $display("PASS");
-        else begin
-            $display("FAIL, all load enable signals should be 0");
-            err = 1'b1;
-        end
         // read value of j
         readnum = 3'b011;
 
@@ -106,12 +83,6 @@ module regfile_tb;
         readnum = 3'b011; // read stored value at r3
 
         #4;
-
-        if (regfile_tb.DUT.R2 == 16'd420) $display("PASS");// 420 stored at r2
-        else begin
-            $display("FAIL, 420 not stored at r2");
-            err = 1'b1;
-        end
         if (data_out == 16'd42) $display("PASS");// read 42 from r3
         else begin
             $display("FAIL, 42 not read from r3");
