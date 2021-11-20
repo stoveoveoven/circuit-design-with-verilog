@@ -76,14 +76,60 @@ module input_iface(clk, SW, ir, LEDR);
   assign LEDR = sel_sw ? ir[7:0] : ir[15:8];  
 endmodule         
 
+//Standard vDFF
 module vDFF(clk,D,Q);
   parameter n=1;
   input clk;
   input [n-1:0] D;
   output [n-1:0] Q;
   reg [n-1:0] Q;
+
   always @(posedge clk)
     Q <= D;
+endmodule
+
+//Standard multiplexer
+module MUX(zero, one, sel, out);
+    parameter width = 1;
+    input [width-1:0] zero, one;
+    input sel;
+    output [width-1:0] out;
+
+    assign out = sel ? one : zero;
+endmodule
+
+//a register with load enable
+module regLoad(in, load, clk, out);
+    parameter n = 1;
+    input [n-1:0] in;
+    input load, clk;
+    output [n-1:0] out;
+
+    wire[n-1:0] muxToDFF, outToMux;
+    assign outToMux = out; // could be problematic
+
+    MUX  #(n) myMUX(outToMux, in, load, muxToDFF);
+    vDFF #(n) myDFF(clk, muxToDFF, out);
+endmodule
+
+//Standard 3:8 decoder
+module Dec38(in, out);
+    input [2:0] in;
+    output reg [7:0] out;
+
+    always@(in)begin
+        case(in)
+            3'b000 : out = 8'b00000001;
+            3'b001 : out = 8'b00000010;
+            3'b010 : out = 8'b00000100;
+            3'b011 : out = 8'b00001000;
+            3'b100 : out = 8'b00010000;
+            3'b101 : out = 8'b00100000;
+            3'b110 : out = 8'b01000000;
+            3'b111 : out = 8'b10000000;
+            default: out = 8'b00000000;
+        endcase
+    end
 endmodule
 
 // The sseg module below can be used to display the value of datpath_out on
