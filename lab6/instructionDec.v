@@ -34,7 +34,7 @@ module MUX3(one, two, three, sel, out);
             3'b001: out = one;
             3'b010: out = two;
             3'b100: out = three;
-            default: out = 3'b000;
+            default: out = 3'bxxx;
         endcase
     end
 endmodule
