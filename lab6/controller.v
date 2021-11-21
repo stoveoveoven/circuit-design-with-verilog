@@ -14,8 +14,13 @@ module controller(  s, reset, w, opcode, op,                                    
     output reg w, loada, loadb, loadc asel, bsel, loads;
     output reg [1:0] vsel;
     output reg [2:0] nsel;
-    output reg [7:0] PC;
-    output reg [15:0] mdata;
+    
+    //not used for lab6
+    output [7:0] PC;
+    output [15:0] mdata;
+
+    assign PC = 8'b0;
+    assign mdata = 16'b0;
 
     reg [2:0] state;
 
@@ -77,11 +82,14 @@ module controller(  s, reset, w, opcode, op,                                    
                     end
                 end
                 `writeRd: begin
-                    
+                    nsel  = 3'b010;
+                    vsel  = 2'b11;
+                    write = 1'b1;
+                    state = `waiting;
+                    w     = 1'b1;
                 end
                 default: state = `waiting;
             endcase 
         end
     end
-
 endmodule
