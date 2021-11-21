@@ -4,9 +4,6 @@
 
 // all purpose
 `define readRm 4'b0011
-`define loadA 4'b0111
-`define loadA2 4'b1000
-
 
 // primarily MOV Rd,Rm {,<sh_op>}
 `define writeRd 4'b0100
@@ -14,6 +11,10 @@
 `define writeRd3 4'b0110
 
 // primarily ADD
+`define loadA 4'b0111
+`define loadA2 4'b1000
+
+
 // `define shift 4'b0010
 
 `define ALU 4'b0101
@@ -66,7 +67,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                                 `ADD: state = `loadA;
                                 `CMP: state = `waiting;
                                 `AND: state = `waiting;
-                                `MOV: state = `waiting;
+                                `MVN: state = `readRm;
                                 default: state = `waiting; // unreachable
                             endcase
                         end
