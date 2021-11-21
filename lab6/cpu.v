@@ -27,4 +27,7 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
                                     sximm5, sximm8, PC, C,                          //inputs
                                 status_out, datapath_out);                          //outputs
 
+    assign N = status_out[2];
+    assign V = status_out[1];
+    assign Z = status_out[0];
 endmodule

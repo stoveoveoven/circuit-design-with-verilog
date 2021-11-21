@@ -9,7 +9,7 @@ module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loa
     output status_out;
 
     wire [15:0] regFile_data_in, regFile_data_out, shifter_in, shifter_out, ALU_ain, ALU_bin, ALU_out, data_loop, bMUX_one, regA_out;
-    wire Z, N, V;
+    wire [2:0] stat;
 
     MUX4 vMUX(mdata, sximm8, {8'b0, PC}, C, vsel, regFile_data_in);         //for lab6, mdata and PC are not used, and will be assigned 0
     //MUX #(16) vMUX(data_loop, datapath_in, vsel, regFile_data_in);
@@ -24,9 +24,9 @@ module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loa
     MUX #(16) aMUX(regA_out, 16'b0, asel, ALU_ain);
     MUX #(16) bMUX(shifter_out, sximm5, bsel, ALU_bin);
 
-    ALU U2(ALU_ain, ALU_bin, ALUop, ALU_out, Z);
+    ALU U2(ALU_ain, ALU_bin, ALUop, ALU_out, stat);
 
-    regLoad #(3) status({V ,N ,Z}, loads, clk, status_out);
+    regLoad #(3) status(stat, loads, clk, status_out);
     regLoad #(16) regC(ALU_out, loadc, clk, data_loop);
 
     assign datapath_out = data_loop;
