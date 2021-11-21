@@ -31,7 +31,7 @@ module cpu_tb;
         load = 1'b0;
         s = 1'b1; 
 
-        #20; // now do these instructions, 2 clock cycles
+        #50; // now do these instructions, 2 clock cycles
 
         s = 1'b0;
 
@@ -42,7 +42,7 @@ module cpu_tb;
         load = 1'b0;
         s = 1'b1;
         
-        #20; // now do these instructions, 2 clock cycles
+        #50; // now do these instructions, 2 clock cycles
 
         s = 1'b0;
 

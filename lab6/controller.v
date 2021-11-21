@@ -39,19 +39,32 @@ module controller(  clk, s, reset, w, opcode, op,                               
         else begin
             case(state)
                 `waiting: if(s)begin
-                    case (opcode)
-                        `MOV:   case (op)
-                                    2'b10: state = `writeRn;
-                                    2'b00: state = `readRm;
-                                default: state = `waiting; // could be problematic
-                                endcase
+                    state = (opcode == 3'b110 && op == 2'b10) ? `writeRn : `readRm;
 
-                        `ALU: state = `ALU;
-                        default: state = `waiting;
+                    case (opcode)
+                        3'b110: begin
+                            case (op)
+                                2'b10: state = `writeRn;
+                                2'b00: state = `readRm;
+                                default: state = `waiting; // unreachable with valid uses of MOV
+                            endcase
+                        end
+                        `ALU: begin
+                            case (op)
+                                `ADD: state = `waiting;
+                                `CMP: state = `waiting;
+                                `AND: state = `waiting;
+                                `MOV: state = `waiting;
+                                default: state = `waiting; // unreachable
+                            endcase
+                        end
+                        default: state = `waiting; // unreachable unless invalid opcode and op
                     endcase
+                    write = 1'b0;
                     w     = 1'b0;
                 end
                 else begin
+                    write = 1'b0;
                     state = `waiting;
                     w     = 1'b1;
                 end
@@ -62,50 +75,50 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     state = `waiting;
                     w     = 1'b1;
                 end
-                `readRm: begin
-                    nsel  = 3'b100;
-                    loadb = 1'b1;
-                    state = (opcode == 3'b101 && op != 2'b11) ? `shiftread : `shift;
-                    w     = 1'b0;
-                end
-                `shift: begin
-                    asel  = 1'b1;
-                    bsel  = 1'b0;
-                    loadc = 1'b1;
-                    state = (opcode == 3'b101) ? `ALU : `writeRd;
-                    w     = 1'b0;
-                end
-                `shiftread: begin
-                    nsel  = 3'b001;
-                    loada = 1'b1;
-                    bsel  = 1'b0;
-                    asel  = 1'b0;
-                    state = `ALU;
-                    w     = 1'b0;
-                end
-                `ALU: begin
-                    asel = 1'b0;
-                    bsel = 1'b0;
-                    //if command is CMP
-                    if(op == 2'b01)begin
-                        loads = 1'b1;
-                        loadc = 1'b0;
-                        state = `waiting;
-                        w     = 1'b1;
-                    end
-                    else begin
-                        loadc = 1'b1;
-                        state = `writeRd;
-                        w     = 1'b0;
-                    end
-                end
-                `writeRd: begin
-                    nsel  = 3'b010;
-                    vsel  = 2'b11;
-                    write = 1'b1;
-                    state = `waiting;
-                    w     = 1'b1;
-                end
+                // `readRm: begin
+                //     nsel  = 3'b100;
+                //     loadb = 1'b1;
+                //     state = (opcode == 3'b101 && op != 2'b11) ? `shiftread : `shift;
+                //     w     = 1'b0;
+                // end
+                // `shift: begin
+                //     asel  = 1'b1;
+                //     bsel  = 1'b0;
+                //     loadc = 1'b1;
+                //     state = (opcode == 3'b101) ? `ALU : `writeRd;
+                //     w     = 1'b0;
+                // end
+                // `shiftread: begin
+                //     nsel  = 3'b001;
+                //     loada = 1'b1;
+                //     bsel  = 1'b0;
+                //     asel  = 1'b0;
+                //     state = `ALU;
+                //     w     = 1'b0;
+                // end
+                // `ALU: begin
+                //     asel = 1'b0;
+                //     bsel = 1'b0;
+                //     //if command is CMP
+                //     if(op == 2'b01)begin
+                //         loads = 1'b1;
+                //         loadc = 1'b0;
+                //         state = `waiting;
+                //         w     = 1'b1;
+                //     end
+                //     else begin
+                //         loadc = 1'b1;
+                //         state = `writeRd;
+                //         w     = 1'b0;
+                //     end
+                // end
+                // `writeRd: begin
+                //     nsel  = 3'b010;
+                //     vsel  = 2'b11;
+                //     write = 1'b1;
+                //     state = `waiting;
+                //     w     = 1'b1;
+                // end
                 default: state = `waiting;
             endcase 
         end
