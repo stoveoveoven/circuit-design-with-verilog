@@ -18,7 +18,9 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
                                 opcode, op, ALUop, sximm5, 
                                     sximm8, shift, readnum, writenum);              //outputs
 
-    controller      ControlFSM (s, reset, w, opcode, op, nsel, ); //NOT DONE
+    controller      ControlFSM (s, reset, w, opcode, op,                            //inputs
+                                nsel, vsel, loada, loadb, loadc, asel, bsel, 
+                                    loads, mdata, C, PC);                           //outputs
 
     datapath        dp         (clk, readnum, vsel, loada, loadb, shift, asel, 
                                     bsel, ALUop, loadc, loads, writenum, mdata, 
