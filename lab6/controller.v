@@ -1,11 +1,13 @@
-`define writeRn 3'b000
-`define readRm 3'b001
-`define shift 3'b010
-`define writeRd 3'b011
-`define ALU 3'b101
-`define shiftread 3'b100 
-`define waiting 3'b111
-`define MOV 3'b110
+`define getRegIn 4'b0000
+`define writeRn 4'b1000
+
+`define readRm 4'b0001
+`define shift 4'b0010
+`define writeRd 4'b0011
+`define ALU 4'b0101
+`define shiftread 4'b0100 
+`define waiting 4'b1111
+`define MOV 4'b0110
 
 `define ADD 2'b00
 `define CMP 2'b01
@@ -29,7 +31,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
     assign PC = 8'b0;
     assign mdata = 16'b0;
 
-    reg [2:0] state;
+    reg [3:0] state;
 
     always@(posedge clk)begin
         if(reset)begin
@@ -39,12 +41,12 @@ module controller(  clk, s, reset, w, opcode, op,                               
         else begin
             case(state)
                 `waiting: if(s)begin
-                    state = (opcode == 3'b110 && op == 2'b10) ? `writeRn : `readRm;
+                    state = (opcode == 3'b110 && op == 2'b10) ? `getRegIn : `readRm;
 
                     case (opcode)
                         3'b110: begin
                             case (op)
-                                2'b10: state = `writeRn;
+                                2'b10: state = `getRegIn;
                                 2'b00: state = `readRm;
                                 default: state = `waiting; // unreachable with valid uses of MOV
                             endcase
@@ -60,27 +62,32 @@ module controller(  clk, s, reset, w, opcode, op,                               
                         end
                         default: state = `waiting; // unreachable unless invalid opcode and op
                     endcase
-                    write = 1'b0;
                     w     = 1'b0;
                 end
                 else begin
-                    write = 1'b0;
                     state = `waiting;
                     w     = 1'b1;
                 end
-                `writeRn: begin
+                `getRegIn: begin
                     nsel  = 3'b001;
                     vsel  = 2'b01;
                     write = 1'b1;
-                    state = `waiting;
+                    state = `writeRn;
                     w     = 1'b1;
                 end
-                // `readRm: begin
-                //     nsel  = 3'b100;
-                //     loadb = 1'b1;
-                //     state = (opcode == 3'b101 && op != 2'b11) ? `shiftread : `shift;
-                //     w     = 1'b0;
-                // end
+                `writeRn:begin
+                    write = 1'b0;
+                    state = `waiting;
+                end
+                `readRm: begin
+                    nsel  = 3'b001;
+                    loadb = 1'b1;
+                    bsel = 1'b0;
+                    asel = 1'b1;
+                    loadc = 1'b1;
+                    state = (opcode == 3'b110) ? `writeRd : `waiting;
+                    w     = 1'b0;
+                end
                 // `shift: begin
                 //     asel  = 1'b1;
                 //     bsel  = 1'b0;
@@ -112,13 +119,13 @@ module controller(  clk, s, reset, w, opcode, op,                               
                 //         w     = 1'b0;
                 //     end
                 // end
-                // `writeRd: begin
-                //     nsel  = 3'b010;
-                //     vsel  = 2'b11;
-                //     write = 1'b1;
-                //     state = `waiting;
-                //     w     = 1'b1;
-                // end
+                `writeRd: begin
+                    nsel  = 3'b010;
+                    vsel  = 2'b11;
+                    write = 1'b1;
+                    state = `waiting;
+                    w     = 1'b1;
+                end
                 default: state = `waiting;
             endcase 
         end
