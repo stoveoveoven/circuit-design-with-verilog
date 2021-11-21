@@ -4,8 +4,25 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
     output [15:0] out;
     output N,V,Z,w;
 
-    wire [15:0] inst_regToDec
+    wire [15:0] inst_regToDec, sximm5, sximm8;
+    wire [2:0] readnum, writenum, nsel, opcode;
+    wire [1:0] ALUop, shift, op;
+    
+    wire vsel, loada, loadb, asel, bsel, loadc, loads
+    wire [15:0] mdata, C;
+    wire [7:0] PC;
 
-    regLoad #(16) instructReg(in, load, clk, inst_regToDec);
+    regLoad #(16)   instructReg(in, load, clk, inst_regToDec);
+
+    instructionDec  instructDec(inst_regToDec, nsel,                                //inputs
+                                opcode, op, ALUop, sximm5, 
+                                    sximm8, shift, readnum, writenum);              //outputs
+
+    controller      ControlFSM (s, reset, w, opcode, op, nsel, ); //NOT DONE
+
+    datapath        dp         (clk, readnum, vsel, loada, loadb, shift, asel, 
+                                    bsel, ALUop, loadc, loads, writenum, mdata, 
+                                    sximm5, sximm8, PC, C,                          //inputs
+                                status_out, datapath_out);                          //outputs
 
 endmodule
