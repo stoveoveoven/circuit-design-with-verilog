@@ -1,17 +1,17 @@
-`define writeRn     3'b000
-`define readRm      3'b001
-`define shift       3'b010
-`define writeRd     3'b011
-`define ALU         3'b101
-`define shiftread   3'b100 
-`define waiting     3'b111
+`define writeRn 3'b000
+`define readRm 3'b001
+`define shift 3'b010
+`define writeRd 3'b011
+`define ALU 3'b101
+`define shiftread 3'b100 
+`define waiting 3'b111
 
-module controller(  s, reset, w, opcode, op,                                                    //inputs
+module controller(  clk, s, reset, w, opcode, op,                                                    //inputs
                     write, nsel, vsel, loada, loadb, loadc, asel, bsel, loads, mdata, PC);      //outputs
-    input s, reset;
+    input s, reset, clk;
     input [2:0] opcode;
     input [1:0] op;
-    output reg w, loada, loadb, loadc asel, bsel, loads;
+    output reg w, write, loada, loadb, loadc, asel, bsel, loads;
     output reg [1:0] vsel;
     output reg [2:0] nsel;
     
@@ -25,14 +25,16 @@ module controller(  s, reset, w, opcode, op,                                    
     reg [2:0] state;
 
     always@(posedge clk)begin
-        if(reset)
+        if(reset)begin
             state = `waiting;
             w     = 1'b1;
+        end
         else begin
             case(state)
-                `waiting: if(s)
+                `waiting: if(s)begin
                     state = (opcode == 3'b110 && op == 2'b01) ? `writeRn : `readRm;
                     w     = 1'b0;
+                end
                 else begin
                     state = `waiting;
                     w     = 1'b1;
@@ -55,7 +57,7 @@ module controller(  s, reset, w, opcode, op,                                    
                     bsel  = 1'b0;
                     loadc = 1'b1;
                     state = (opcode == 3'b101) ? `ALU : `writeRd;
-                    w     = 1'b0
+                    w     = 1'b0;
                 end
                 `shiftread: begin
                     nsel  = 3'b001;
