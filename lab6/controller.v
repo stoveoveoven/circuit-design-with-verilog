@@ -5,6 +5,13 @@
 `define ALU 3'b101
 `define shiftread 3'b100 
 `define waiting 3'b111
+`define MOV 3'b110
+
+`define ADD 2'b00
+`define CMP 2'b01
+`define AND 2'b10
+`define MVN 2'b11
+
 
 module controller(  clk, s, reset, w, opcode, op,                                                    //inputs
                     write, nsel, vsel, loada, loadb, loadc, asel, bsel, loads, mdata, PC);      //outputs
@@ -32,7 +39,16 @@ module controller(  clk, s, reset, w, opcode, op,                               
         else begin
             case(state)
                 `waiting: if(s)begin
-                    state = (opcode == 3'b110 && op == 2'b01) ? `writeRn : `readRm;
+                    case (opcode)
+                        `MOV:   case (op)
+                                    2'b10: state = `writeRn;
+                                    2'b00: state = `readRm;
+                                default: state = `waiting; // could be problematic
+                                endcase
+
+                        `ALU: state = `ALU;
+                        default: state = `waiting;
+                    endcase
                     w     = 1'b0;
                 end
                 else begin

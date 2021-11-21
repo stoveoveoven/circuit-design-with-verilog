@@ -29,7 +29,7 @@ module MUX3(one, two, three, sel, out);
     input [2:0] one, two, three, sel;
     output reg [2:0] out;
 
-    always@(sel)begin
+    always@(*)begin
         case(sel)
             3'b001: out = one;
             3'b010: out = two;

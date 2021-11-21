@@ -6,7 +6,7 @@ module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loa
     input [1:0] shift, ALUop, vsel;
 
     output [15:0] datapath_out;
-    output status_out;
+    output [2:0] status_out;
 
     wire [15:0] regFile_data_in, regFile_data_out, shifter_in, shifter_out, ALU_ain, ALU_bin, ALU_out, data_loop, bMUX_one, regA_out;
     wire [2:0] stat;
@@ -37,7 +37,7 @@ module MUX4(one, two, three, four, sel, out);
     input [1:0] sel;
     output reg [15:0] out;
 
-    always@(sel)begin
+    always@(*)begin
         case(sel)
             2'b00: out = 16'b0;         //stays 0 for lab 6
             2'b01: out = two;
