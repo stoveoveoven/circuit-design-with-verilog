@@ -27,7 +27,7 @@ module cpu_tb;
         #10; // load instruction in
         load = 1'b0;
         s = 1'b1; 
-        #20; // now do these instructions, 2 clock cycles
+        #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
 
         // MOV R3, R0, LSL #1
@@ -37,7 +37,7 @@ module cpu_tb;
         #10; // load instruction in
         load = 1'b0;
         s = 1'b1; 
-        #40; // now do these instructions, 4 clock cycles
+        #40; // now do these instructions, 4 clock cycles +1 for load = 5 clock cycles for this instruction
         s = 1'b0;
 
         // MOV R1, #2
@@ -46,11 +46,9 @@ module cpu_tb;
         load = 1'b1;#10; // load instruction in
         load = 1'b0;
         s = 1'b1;
-        
-        #50; // now do these instructions, 2 clock cycles
-
+        #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
-
+        
         // ADD R2,R1,R0,LSL#1 should be 16
         // 1010000101001000
         in = 16'b1010000101001000;

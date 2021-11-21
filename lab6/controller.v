@@ -1,9 +1,15 @@
-`define getRegIn 4'b0000
-`define writeRn 4'b1000
+`define getRegIn 4'b0001
+`define writeRn 4'b0010
 
-`define readRm 4'b0001
-`define shift 4'b0010
-`define writeRd 4'b0011
+`define readRm 4'b0011
+
+`define writeRd 4'b0100
+`define writeRd2 4'b0101
+`define writeRd3 4'b0110
+
+
+// `define shift 4'b0010
+
 `define ALU 4'b0101
 `define shiftread 4'b0100 
 `define waiting 4'b1111
@@ -123,8 +129,18 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     nsel  = 3'b010;
                     vsel  = 2'b11;
                     write = 1'b1;
-                    state = `waiting;
+                    state = `writeRd2;
                     w     = 1'b1;
+                end
+                `writeRd2:begin
+                    state = `writeRd3;
+                end
+                `writeRd3:begin
+                    asel = 1'b0;
+                    loadb = 1'b0;
+                    loadc = 1'b0;
+                    write = 1'b0;
+                    state = `waiting;
                 end
                 default: state = `waiting;
             endcase 
