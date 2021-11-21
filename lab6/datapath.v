@@ -1,5 +1,5 @@
-module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loadc, loads, writenum, write, mdata, sximm5, sximm8, PC, C status_out, datapath_out);
-    input [15:0] mdata, sximm8, sximm5, C;
+module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loadc, loads, writenum, write, mdata, sximm5, sximm8, PC, status_out, datapath_out);
+    input [15:0] mdata, sximm8, sximm5;
     input [7:0] PC;
     input [2:0] writenum, readnum;
     input clk, write, loada, loadb, loadc, loads, asel, bsel;
@@ -11,7 +11,7 @@ module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loa
     wire [15:0] regFile_data_in, regFile_data_out, shifter_in, shifter_out, ALU_ain, ALU_bin, ALU_out, data_loop, bMUX_one, regA_out;
     wire [2:0] stat;
 
-    MUX4 vMUX(mdata, sximm8, {8'b0, PC}, C, vsel, regFile_data_in);         //for lab6, mdata and PC are not used, and will be assigned 0
+    MUX4 vMUX(mdata, sximm8, {8'b0, PC}, data_loop, vsel, regFile_data_in);         //for lab6, mdata and PC are not used, and will be assigned 0
     //MUX #(16) vMUX(data_loop, datapath_in, vsel, regFile_data_in);
 
     regfile REGFILE(regFile_data_in, writenum, write, readnum, clk, regFile_data_out);
@@ -33,9 +33,9 @@ module datapath (clk, readnum, vsel, loada, loadb, shift, asel, bsel, ALUop, loa
 endmodule
 
 module MUX4(one, two, three, four, sel, out);
-    input[15:0] one, two, three, four;
-    input[1:0] sel;
-    output[15:0] out;
+    input [15:0] one, two, three, four;
+    input [1:0] sel;
+    output reg [15:0] out;
 
     always@(sel)begin
         case(sel)

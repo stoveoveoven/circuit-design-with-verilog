@@ -9,7 +9,7 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
     wire [1:0] ALUop, shift, op;
     
     wire vsel, loada, loadb, asel, bsel, loadc, loads
-    wire [15:0] mdata, C;
+    wire [15:0] mdata, data_loop;
     wire [7:0] PC;
 
     regLoad #(16)   instructReg(in, load, clk, inst_regToDec);
@@ -20,11 +20,11 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
 
     controller      ControlFSM (s, reset, w, opcode, op,                            //inputs
                                 nsel, vsel, loada, loadb, loadc, asel, bsel, 
-                                    loads, mdata, C, PC);                           //outputs
+                                    loads, mdata, PC);                              //outputs
 
     datapath        dp         (clk, readnum, vsel, loada, loadb, shift, asel, 
-                                    bsel, ALUop, loadc, loads, writenum, mdata, 
-                                    sximm5, sximm8, PC, C,                          //inputs
+                                    bsel, ALUop, loadc, loads, writenum, write, 
+                                    mdata, sximm5, sximm8, PC,                      //inputs
                                 status_out, datapath_out);                          //outputs
 
     assign N = status_out[2];
