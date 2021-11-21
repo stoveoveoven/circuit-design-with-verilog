@@ -1,13 +1,19 @@
+// primarily MOV, Rn, #<im8>
 `define getRegIn 4'b0001
 `define writeRn 4'b0010
 
+// all purpose
 `define readRm 4'b0011
+`define loadA 4'b0111
+`define loadA2 4'b1000
 
+
+// primarily MOV Rd,Rm {,<sh_op>}
 `define writeRd 4'b0100
 `define writeRd2 4'b0101
 `define writeRd3 4'b0110
 
-
+// primarily ADD
 // `define shift 4'b0010
 
 `define ALU 4'b0101
@@ -47,8 +53,6 @@ module controller(  clk, s, reset, w, opcode, op,                               
         else begin
             case(state)
                 `waiting: if(s)begin
-                    state = (opcode == 3'b110 && op == 2'b10) ? `getRegIn : `readRm;
-
                     case (opcode)
                         3'b110: begin
                             case (op)
@@ -57,9 +61,9 @@ module controller(  clk, s, reset, w, opcode, op,                               
                                 default: state = `waiting; // unreachable with valid uses of MOV
                             endcase
                         end
-                        `ALU: begin
+                        3'b101: begin
                             case (op)
-                                `ADD: state = `waiting;
+                                `ADD: state = `loadA;
                                 `CMP: state = `waiting;
                                 `AND: state = `waiting;
                                 `MOV: state = `waiting;
@@ -75,7 +79,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     w     = 1'b1;
                 end
                 `getRegIn: begin
-                    nsel  = 3'b001;
+                    nsel  = 3'b100;
                     vsel  = 2'b01;
                     write = 1'b1;
                     state = `writeRn;
@@ -89,10 +93,26 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     nsel  = 3'b001;
                     loadb = 1'b1;
                     bsel = 1'b0;
-                    asel = 1'b1;
+                    // if MOV Rd,Rm{,<sh_op>} or MVN Rd,Rm{,<sh_op>}, Rn doesnt matter
+                    case (opcode)
+                        3'b110: asel = (op == 2'b00) ? 1'b1 : 1'b0; 
+                        3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
+                        default: asel = 1'b0;
+                    endcase
                     loadc = 1'b1;
-                    state = (opcode == 3'b110) ? `writeRd : `waiting;
+                    state = `writeRd;
                     w     = 1'b0;
+                end
+                `loadA: begin
+                    // read Rn
+                    nsel = 3'b100;
+                    loada = 1'b1;
+                    asel = 1'b0;
+                    state = `loadA2;
+                end
+                `loadA2: begin
+                    loada = 1'b0;
+                    state = `readRm;
                 end
                 // `shift: begin
                 //     asel  = 1'b1;
@@ -126,21 +146,19 @@ module controller(  clk, s, reset, w, opcode, op,                               
                 //     end
                 // end
                 `writeRd: begin
+                    state = `writeRd2;
+                end
+                `writeRd2:begin
                     nsel  = 3'b010;
                     vsel  = 2'b11;
                     write = 1'b1;
-                    state = `writeRd2;
-                    w     = 1'b1;
-                end
-                `writeRd2:begin
                     state = `writeRd3;
                 end
                 `writeRd3:begin
-                    asel = 1'b0;
-                    loadb = 1'b0;
                     loadc = 1'b0;
                     write = 1'b0;
                     state = `waiting;
+                    w     = 1'b1;
                 end
                 default: state = `waiting;
             endcase 
