@@ -28,7 +28,7 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
     datapath        DP         (.clk(clk),   .readnum(readnum), .vsel(vsel),    .loada(loada), .loadb(loadb),       .shift(shift), .asel(asel), 
                                 .bsel(bsel), .ALUop(ALUop),     .loadc(loadc),  .loads(loads), .writenum(writenum), .write(write), 
                                 .mdata(mdata), .sximm5(sximm5), .sximm8(sximm8), .PC(PC),       //inputs
-                                .status_out(status_out),        .datapath_out(datapath_out));   //outputs
+                                .status_out(status_out),        .datapath_out(out));   //outputs
 
     assign N = status_out[2];
     assign V = status_out[1];
