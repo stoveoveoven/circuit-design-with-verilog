@@ -14,7 +14,7 @@ module ALU(Ain, Bin, ALUop, out, stat);
     end
 
     //stat assignment
-    assign stat[0] = (out == 2'b00);                                                            //Z - checks if answer is 0
-    assign stat[1] = (~out[15] && Ain[15] && Bin[15]) || (out[15] && ~Ain[15] && ~Bin[15]);     //V - overflow detection
+    assign stat[0] = (out == 16'd0);                                                            //Z - checks if answer is 0
+    assign stat[1] = (~out[15] && Ain[15] && ~Bin[15]) || (out[15] && ~Ain[15] && Bin[15]);     //V - overflow detection
     assign stat[2] = out[15];                                                                   //N - 2's complement status
 endmodule

@@ -20,7 +20,6 @@
 `define ALU 4'b0101
 `define shiftread 4'b0100 
 `define waiting 4'b1111
-`define MOV 4'b0110
 
 `define ADD 2'b00
 `define CMP 2'b01
@@ -65,7 +64,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                         3'b101: begin
                             case (op)
                                 `ADD: state = `loadA;
-                                `CMP: state = `waiting;
+                                `CMP: state = `loadA;
                                 `AND: state = `loadA;
                                 `MVN: state = `readRm;
                                 default: state = `waiting; // unreachable
@@ -115,47 +114,22 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     loada = 1'b0;
                     state = `readRm;
                 end
-                // `shift: begin
-                //     asel  = 1'b1;
-                //     bsel  = 1'b0;
-                //     loadc = 1'b1;
-                //     state = (opcode == 3'b101) ? `ALU : `writeRd;
-                //     w     = 1'b0;
-                // end
-                // `shiftread: begin
-                //     nsel  = 3'b001;
-                //     loada = 1'b1;
-                //     bsel  = 1'b0;
-                //     asel  = 1'b0;
-                //     state = `ALU;
-                //     w     = 1'b0;
-                // end
-                // `ALU: begin
-                //     asel = 1'b0;
-                //     bsel = 1'b0;
-                //     //if command is CMP
-                //     if(op == 2'b01)begin
-                //         loads = 1'b1;
-                //         loadc = 1'b0;
-                //         state = `waiting;
-                //         w     = 1'b1;
-                //     end
-                //     else begin
-                //         loadc = 1'b1;
-                //         state = `writeRd;
-                //         w     = 1'b0;
-                //     end
-                // end
                 `writeRd: begin
                     state = `writeRd2;
                 end
                 `writeRd2:begin
-                    nsel  = 3'b010;
-                    vsel  = 2'b11;
-                    write = 1'b1;
+                    if (op != 2'b01)begin // if CMP
+                        nsel  = 3'b010;
+                        vsel  = 2'b11;
+                        write = 1'b1;
+                    end
+                    else begin
+                        loads = 1'b1;
+                    end
                     state = `writeRd3;
                 end
                 `writeRd3:begin
+                    loads = 1'b0;
                     loadc = 1'b0;
                     write = 1'b0;
                     state = `waiting;
