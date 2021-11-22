@@ -87,6 +87,15 @@ module cpu_tb;
         #40; // now do these instructions, 4 clock cycles + 1 for load = 5 clock cycles for moving number into reg
         s = 1'b0;
 
+        // AND R0,R0, LSL#1 should be 1111110001 = -(2*7) = -14
+        // 1011000000001000
+        in = 16'b1011000000001000;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #60; // now do these instructions, 4 clock cycles + 1 for load = 5 clock cycles for moving number into reg
+        s = 1'b0;
+
 
 
         #10;

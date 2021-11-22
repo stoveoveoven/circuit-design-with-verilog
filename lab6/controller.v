@@ -66,7 +66,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                             case (op)
                                 `ADD: state = `loadA;
                                 `CMP: state = `waiting;
-                                `AND: state = `waiting;
+                                `AND: state = `loadA;
                                 `MVN: state = `readRm;
                                 default: state = `waiting; // unreachable
                             endcase
