@@ -25,7 +25,7 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
                                 .write(write), .nsel(nsel),     .vsel(vsel),    .loada(loada),  .loadb(loadb),      .loadc(loadc), .asel(asel), .bsel(bsel), 
                                 .loads(loads), .mdata(mdata),   .PC(PC));                                              //outputs
 
-    datapath        dp         (.clk(clk),   .readnum(readnum), .vsel(vsel),    .loada(loada), .loadb(loadb),       .shift(shift), .asel(asel), 
+    datapath        DP         (.clk(clk),   .readnum(readnum), .vsel(vsel),    .loada(loada), .loadb(loadb),       .shift(shift), .asel(asel), 
                                 .bsel(bsel), .ALUop(ALUop),     .loadc(loadc),  .loads(loads), .writenum(writenum), .write(write), 
                                 .mdata(mdata), .sximm5(sximm5), .sximm8(sximm8), .PC(PC),       //inputs
                                 .status_out(status_out),        .datapath_out(datapath_out));   //outputs

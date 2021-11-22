@@ -83,11 +83,11 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     vsel  = 2'b01;
                     write = 1'b1;
                     state = `writeRn;
-                    w     = 1'b1;
                 end
                 `writeRn:begin
                     write = 1'b0;
                     state = `waiting;
+                    w = 1'b1;
                 end
                 `readRm: begin
                     nsel  = 3'b001;
@@ -99,9 +99,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                         3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
                         default: asel = 1'b0;
                     endcase
-                    loadc = 1'b1;
                     state = `writeRd;
-                    w     = 1'b0;
                 end
                 `loadA: begin
                     // read Rn
@@ -115,22 +113,31 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     state = `readRm;
                 end
                 `writeRd: begin
+                    if (op == 2'b01)begin
+                        loads = 1'b1;
+                    end
+                    else begin
+                        loadc = 1'b1;
+                    end
+
                     state = `writeRd2;
                 end
                 `writeRd2:begin
-                    if (op != 2'b01)begin // if CMP
+                    if (op == 2'b01)begin // if not CMP
+                        loads = 1'b0;
+                        
+                    end
+                    else begin // CMP
                         nsel  = 3'b010;
                         vsel  = 2'b11;
                         write = 1'b1;
-                    end
-                    else begin
-                        loads = 1'b1;
+                        loadc = 1'b0;
                     end
                     state = `writeRd3;
                 end
                 `writeRd3:begin
-                    loads = 1'b0;
-                    loadc = 1'b0;
+                    asel = 1'b0;
+                    bsel = 1'b0;
                     write = 1'b0;
                     state = `waiting;
                     w     = 1'b1;

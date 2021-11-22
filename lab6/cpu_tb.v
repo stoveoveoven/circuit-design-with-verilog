@@ -29,6 +29,12 @@ module cpu_tb;
         s = 1'b1; 
         #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R0 == 16'd7) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
 
         // MOV R3, R0, LSL #1
         // 1100000001101000
@@ -39,6 +45,12 @@ module cpu_tb;
         s = 1'b1; 
         #40; // now do these instructions, 4 clock cycles +1 for load = 5 clock cycles for this instruction
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R3 == 16'd14) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
 
         // MOV R1, #2
         // 1101000100000010
@@ -48,6 +60,12 @@ module cpu_tb;
         s = 1'b1;
         #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R1 == 16'd2) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
         
         // ADD R2,R1,R0,LSL#1 should be 16
         // 1010000101001000
@@ -58,6 +76,12 @@ module cpu_tb;
         s = 1'b1; 
         #60; // now do these instructions
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R2 == 16'd16) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
 
         // ADD R4,R3,R2,LSR#1 should be 14+8 = 22
         // 1010001110010010
@@ -68,6 +92,12 @@ module cpu_tb;
         s = 1'b1; 
         #60; // now do these instructions
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R4 == 16'd22) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
 
         // MOV R1, #69
         // 1101000101000101
@@ -77,6 +107,12 @@ module cpu_tb;
         s = 1'b1;
         #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R1 == 16'd69) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
 
         // MVN R0,R0, LSL#1 should be 1111110001 = -(2*7) = -14
         // 1011100000001000
@@ -86,6 +122,12 @@ module cpu_tb;
         s = 1'b1;
         #40; // total 5 clock cycles for MVN
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R0 == 16'b1111111111110001) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
 
         // AND R0,R0, LSL#1 should be 1111110001 = -(2*7) = -14
         // 1011000000001000
@@ -95,6 +137,12 @@ module cpu_tb;
         s = 1'b1;
         #60; // now do these instructions, 6 clock cycles + 1 for load = 7 clock cycles for AND
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R0 == 16'b1111111111100000) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
 
 
 
@@ -104,7 +152,7 @@ module cpu_tb;
         load = 1'b1;#10; // load instruction in
         load = 1'b0;
         s = 1'b1;
-        #70; // needs 8 total clk cycles
+        #60; // needs 8 total clk cycles
         s = 1'b0;
         if (DUT.N == 1'b0) $display("PASS");
         else begin
@@ -175,6 +223,12 @@ module cpu_tb;
         s = 1'b1;
         #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R5 == 16'd1) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
 
         // MOV R6, #2
         in = 16'b1101011000000010;
@@ -183,6 +237,12 @@ module cpu_tb;
         s = 1'b1;
         #20; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R6 == 16'd2) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
 
         // MVN R5,R5
         // 1011100010100101
@@ -192,6 +252,12 @@ module cpu_tb;
         s = 1'b1;
         #40; // total 5 clock cycles for MVN
         s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R5 == 16'b1111111111111110) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
 
         // CMP R5,R6, LSR#1  TEST for -1-(2) which apparently isnt overflow
         // 1010110100000110
