@@ -20,6 +20,54 @@ module cpu_tb;
         reset = 1'b0;
         load = 1'b0; #10; // nothing should change
 
+        // GENERAL MOV Rn #num TESTS!!!
+        
+        // mov 0 into R6
+        in = 16'b1101011000000000;
+        load = 1'b1;
+        #10; // load instruction in
+        load = 1'b0;
+        s = 1'b1; 
+        #20; // wait 2 clk cycles
+        s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R6 == 16'd0) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
+        // mov -1 into R7, also checks bit extension
+        in = 16'b1101011111111111;
+        load = 1'b1;
+        #10; // load instruction in
+        load = 1'b0;
+        s = 1'b1; 
+        #20; // wait 2 clk cycles
+        s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R7 == 16'b1111111111111111) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+        #5;
+
+        // GENERAL MOV Rd, Rm <sh_op> TESTS!!!
+
+        // MOV R5, R7, LSL #1
+        in = 16'b1100000010101111;
+        load = 1'b1;
+        #10; // load instruction in
+        load = 1'b0;
+        s = 1'b1; 
+        #40; // wait 4 clk cycles
+        s = 1'b0;
+        #5;
+        if (DUT.DP.REGFILE.R5 == 16'b1111111111111110) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+        #5;
+
         // MOV R0, #7
         // 1101000000000111
         in = 16'b1101000000000111;
@@ -176,7 +224,7 @@ module cpu_tb;
         load = 1'b1;#10; // load instruction in
         load = 1'b0;
         s = 1'b1;
-        #70; // needs 8 total clk cycles
+        #60; // needs 8 total clk cycles
         s = 1'b0;
         if (DUT.N == 1'b0) $display("PASS");
         else begin
@@ -199,7 +247,7 @@ module cpu_tb;
         load = 1'b1;#10; // load instruction in
         load = 1'b0;
         s = 1'b1;
-        #70; // needs 8 total clk cycles
+        #60; // needs 8 total clk cycles
         s = 1'b0;
         if (DUT.N == 1'b1) $display("PASS");
         else begin
@@ -280,6 +328,93 @@ module cpu_tb;
         if (DUT.Z == 1'b0) $display("PASS");
         else begin
             $display("FAIL, Z not updated for %b",in);
+        end
+
+        // MORE TEST CASES FOR ADD,AND,MVN using posedge w
+
+        // MOV R0, biggest number
+        in = 16'b1101000001111111;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #10; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
+        s = 1'b0;
+        @ (posedge w)
+        #10;
+        if (DUT.DP.REGFILE.R0 == 16'd127) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+
+        // MOV R1, funny number
+        in = 16'b1101000101010101;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #10; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
+        s = 1'b0;
+        @ (posedge w)
+        #10;
+        if (DUT.DP.REGFILE.R1 == 16'b0000000001010101) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+
+        // MVN R2, R0  opposite of funny number
+        in = 16'b1011100001000001;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #10; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
+        s = 1'b0;
+        @ (posedge w)
+        #10;
+        if (DUT.DP.REGFILE.R2 == 16'b1111111110101010) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
+        end
+
+        // AND R3,R1,R2 should be all 0s
+        in = 16'b1011000101100010;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #10; // yes
+        s = 1'b0;
+        @ (posedge w)
+        #10;
+        if (DUT.DP.REGFILE.R3 == 16'd0) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+
+        // AND R4,R1,R1 should be equal to R1
+        // 1011000000001000
+        in = 16'b1011000110000001;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #10; // yes
+        s = 1'b0;
+        @ (posedge w)
+        #10;
+        if (DUT.DP.REGFILE.R4 == DUT.DP.REGFILE.R1) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[7:5]);
+        end
+
+        // MVN R3, R3  alll 1
+        in = 16'b1011100001100011;
+        load = 1'b1;#10; // load instruction in
+        load = 1'b0;
+        s = 1'b1;
+        #10; // now do these instructions, 2 clock cycles + 1 for load = 3 clock cycles for moving number into reg
+        s = 1'b0;
+        @ (posedge w)
+        #10;
+        if (DUT.DP.REGFILE.R3 == {16{1'b1}}) $display("PASS");
+        else begin
+            $display("FAIL, R%d not updated",in[10:8]);
         end
 
 
