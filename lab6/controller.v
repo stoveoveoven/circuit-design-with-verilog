@@ -27,12 +27,14 @@
 `define MVN 2'b11
 
 
-module controller(  clk, s, reset, w, opcode, op,                                                    //inputs
+module controller(  clk, s, reset, w, opcode, op,                                               //inputs
                     write, nsel, vsel, loada, loadb, loadc, asel, bsel, loads, mdata, PC);      //outputs
-    input s, reset, clk;
-    input [2:0] opcode;
-    input [1:0] op;
-    output reg w, write, loada, loadb, loadc, asel, bsel, loads;
+
+    input            reset, clk, s;
+    input      [1:0] op;
+    input      [2:0] opcode;
+    
+    output reg       write, loada, loadb, loadc, asel, bsel, loads, w;
     output reg [1:0] vsel;
     output reg [2:0] nsel;
     
@@ -52,44 +54,44 @@ module controller(  clk, s, reset, w, opcode, op,                               
         end
         else begin
             case(state)
-                `waiting: if(s)begin
+                `waiting: if(s)begin                        // decode state
                     case (opcode)
-                        3'b110: begin
+                        3'b110: begin                       // if operation is MOV type
                             case (op)
-                                2'b10: state = `getRegIn;
-                                2'b00: state = `readRm;
-                                default: state = `waiting; // unreachable with valid uses of MOV
+                                2'b10: state = `getRegIn;   // MOV #sximm8
+                                2'b00: state = `readRm;     // MOV Rd Rm
+                                default: state = `waiting;  // unreachable with valid uses of MOV
                             endcase
                         end
-                        3'b101: begin
+                        3'b101: begin                       // if operation is ALU type
                             case (op)
-                                `ADD: state = `loadA;
+                                `ADD: state = `loadA;       
                                 `CMP: state = `loadA;
-                                `AND: state = `loadA;
-                                `MVN: state = `readRm;
-                                default: state = `waiting; // unreachable
+                                `AND: state = `loadA;       // ADD, CMP, AND
+                                `MVN: state = `readRm;      // MVN
+                                default: state = `waiting;  // unreachable
                             endcase
                         end
-                        default: state = `waiting; // unreachable unless invalid opcode and op
+                        default: state = `waiting;          // unreachable unless invalid opcode and op
                     endcase
-                    w     = 1'b0;
+                    w     = 1'b0;                           // setting the w counter
                 end
                 else begin
-                    state = `waiting;
+                    state = `waiting;                       // simple waiting state
                     w     = 1'b1;
                 end
-                `getRegIn: begin
+                `getRegIn: begin                            // MOV #sximm8: load integer value
                     nsel  = 3'b100;
                     vsel  = 2'b01;
                     write = 1'b1;
                     state = `writeRn;
                 end
-                `writeRn:begin
+                `writeRn:begin                              // MOV #sximm8: write value to reg
                     write = 1'b0;
                     state = `waiting;
                     w = 1'b1;
                 end
-                `readRm: begin
+                `readRm: begin                              // used for move and negate, which only requires reading one value
                     nsel  = 3'b001;
                     loadb = 1'b1;
                     bsel = 1'b0;
@@ -101,14 +103,14 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     endcase
                     state = `writeRd;
                 end
-                `loadA: begin
+                `loadA: begin                                // ADD, CMP, AND: load first value into regA
                     // read Rn
                     nsel = 3'b100;
                     loada = 1'b1;
                     asel = 1'b0;
                     state = `loadA2;
                 end
-                `loadA2: begin
+                `loadA2: begin                               // ADD, CMP, AND: stops loading, proceed to reading next reg
                     loada = 1'b0;
                     state = `readRm;
                 end

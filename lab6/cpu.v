@@ -17,22 +17,25 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
 
     regLoad #(16)   instructReg(in, load, clk, inst_regToDec);
 
-    instructionDec  instructDec(.in(inst_regToDec), .nsel(nsel),                                                    //inputs
+    instructionDec  instructDec(.in(inst_regToDec), .nsel(nsel),                                                    // inputs
+
                                 .opcode(opcode),    .op(op),            .ALUop(ALUop),      .sximm5(sximm5), 
-                                .sximm8(sximm8),    .shift(shift),      .rnum(readnum),     .wnum(writenum));       //outputs
+                                .sximm8(sximm8),    .shift(shift),      .rnum(readnum),     .wnum(writenum));       // outputs
 
     controller      ControlFSM (.clk(clk),          .s(s),              .reset(reset),      .w(w),          
-                                .opcode(opcode),    .op(op),                                                        //inputs
+                                .opcode(opcode),    .op(op),                                                        // inputs
+
                                 .write(write),      .nsel(nsel),        .vsel(vsel),        .loada(loada),  
                                 .loadb(loadb),      .loadc(loadc),      .asel(asel),        .bsel(bsel), 
-                                .loads(loads),      .mdata(mdata),      .PC(PC));                                   //outputs
+                                .loads(loads),      .mdata(mdata),      .PC(PC));                                   // outputs
 
     datapath        DP         (.clk(clk),          .readnum(readnum),  .vsel(vsel),        .loada(loada), 
                                 .loadb(loadb),      .shift(shift),      .asel(asel),        .bsel(bsel),        
                                 .ALUop(ALUop),      .loadc(loadc),      .loads(loads),      .writenum(writenum), 
                                 .write(write),      .mdata(mdata),      .sximm5(sximm5),    .sximm8(sximm8), 
-                                .PC(PC),                                                                            //inputs
-                                .status_out(status_out),        .datapath_out(datapath_out));                       //outputs
+                                .PC(PC),                                                                            // inputs
+
+                                .status_out(status_out),        .datapath_out(datapath_out));                       // outputs
 
     assign N = status_out[2];
     assign V = status_out[1];
