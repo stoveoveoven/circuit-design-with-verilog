@@ -20,8 +20,8 @@ module datapath_tb;
 
     initial begin
         forever begin
-            clk = 1'b0 #5;
-            clk = 1'b1 #5;
+            clk = 1'b0; #5;
+            clk = 1'b1; #5;
 
             mdata = 16'b0;              //not used
             PC    = 8'b0;               //not used
@@ -70,12 +70,10 @@ module datapath_tb;
         if (datapath_out == 16'd16) $display("PASS");
         else begin
             $display("FAIL");
-            err = 1'b1;
         end
         if (status_out[0] == 1'b0) $display("PASS");
         else begin
             $display("FAIL");
-            err = 1'b1;
         end
 
         readnum = 3'd0;
@@ -83,7 +81,6 @@ module datapath_tb;
         if (DUT.REGFILE.R0 == 16'd7) $display("PASS");
         else begin
             $display("FAIL");
-            err = 1'b1;
         end
 
         readnum = 3'd2;
@@ -91,7 +88,6 @@ module datapath_tb;
         if (DUT.REGFILE.R2 == 16'd16) $display("PASS");
         else begin
             $display("FAIL");
-            err = 1'b1;
         end
 
         readnum = 3'd1;
@@ -99,7 +95,6 @@ module datapath_tb;
         if (DUT.REGFILE.R1 == 16'd2) $display("PASS");
         else begin
             $display("FAIL");
-            err = 1'b1;
         end
 
 	    #5;
