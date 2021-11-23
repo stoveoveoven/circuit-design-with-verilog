@@ -54,65 +54,73 @@ module controller(  clk, s, reset, w, opcode, op,                               
         end
         else begin
             case(state)
-                `waiting: if(s)begin                        // decode state
+                `waiting: if(s)begin                                        // decode state
                     case (opcode)
-                        3'b110: begin                       // if operation is MOV type
+                        3'b110: begin                                       // if operation is MOV type
                             case (op)
-                                2'b10: state = `getRegIn;   // MOV #sximm8
-                                2'b00: state = `readRm;     // MOV Rd Rm
-                                default: state = `waiting;  // unreachable with valid uses of MOV
+                                2'b10: state = `getRegIn;                   // MOV #sximm8
+                                2'b00: state = `readRm;                     // MOV Rd Rm
+                                default: state = `waiting;                  // unreachable with valid uses of MOV
                             endcase
                         end
-                        3'b101: begin                       // if operation is ALU type
+                        3'b101: begin                                       // if operation is ALU type
                             case (op)
                                 `ADD: state = `loadA;       
                                 `CMP: state = `loadA;
-                                `AND: state = `loadA;       // ADD, CMP, AND
-                                `MVN: state = `readRm;      // MVN
-                                default: state = `waiting;  // unreachable
+                                `AND: state = `loadA;                       // ADD, CMP, AND
+                                `MVN: state = `readRm;                      // MVN
+                                default: state = `waiting;                  // unreachable
                             endcase
                         end
-                        default: state = `waiting;          // unreachable unless invalid opcode and op
+                        default: state = `waiting;                          // unreachable unless invalid opcode and op
                     endcase
-                    w     = 1'b0;                           // setting the w counter
+                    w     = 1'b0;                                           // setting the w counter
                 end
                 else begin
-                    state = `waiting;                       // simple waiting state
+                    state = `waiting;                                       // simple waiting state
                     w     = 1'b1;
                 end
-                `getRegIn: begin                            // MOV #sximm8: load integer value
+                `getRegIn: begin                                            // MOV #sximm8: load integer value
                     nsel  = 3'b100;
                     vsel  = 2'b01;
                     write = 1'b1;
                     state = `writeRn;
                 end
-                `writeRn:begin                              // MOV #sximm8: write value to reg
+                `writeRn:begin                                              // MOV #sximm8: write value to reg
                     write = 1'b0;
                     state = `waiting;
                     w = 1'b1;
                 end
-                `readRm: begin                              // used for move and negate, which only requires reading one value
-                    nsel  = 3'b001;
-                    loadb = 1'b1;
-                    bsel = 1'b0;
-                    // if MOV Rd,Rm{,<sh_op>} or MVN Rd,Rm{,<sh_op>}, Rn doesnt matter
-                    case (opcode)
-                        3'b110: asel = (op == 2'b00) ? 1'b1 : 1'b0; 
-                        3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
-                        default: asel = 1'b0;
-                    endcase
-                    state = `writeRd;
-                end
-                `loadA: begin                                // ADD, CMP, AND: load first value into regA
+//                `readRm: begin                                            // used for move and negate, which only requires reading one value
+//                    nsel  = 3'b001;
+//                    loadb = 1'b1;
+//                    bsel = 1'b0;
+                    
+//                    case (opcode)
+//                        3'b110: asel = (op == 2'b00) ? 1'b1 : 1'b0; 
+//                        3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
+//                        default: asel = 1'b0;
+//                    endcase
+//                    state = `writeRd;
+//                end
+                `loadA: begin                                               // ADD, CMP, AND: load first value into regA
                     // read Rn
                     nsel = 3'b100;
                     loada = 1'b1;
                     asel = 1'b0;
                     state = `loadA2;
                 end
-                `loadA2: begin                               // ADD, CMP, AND: stops loading, proceed to reading next reg
+                `loadB: begin                                               // ADD, CMP, AND: stops loading, proceed to reading next reg
+                    nsel = 3'b001;
+                    loadb = 1'b1;
+                    bsel = 1'b0;
                     loada = 1'b0;
-                    state = `readRm;
+                    case (opcode)
+                        3'b110: asel = (op == 2'b00) ? 1'b1 : 1'b0;         // if MOV Rd,Rm{,<sh_op>} or MVN Rd,Rm{,<sh_op>}, Rn doesnt matter
+                        3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
+                        default: asel = 1'b0;
+                    endcase
+                    state = `writeRd;
                 end
                 `writeRd: begin
                     if (op == 2'b01)begin
