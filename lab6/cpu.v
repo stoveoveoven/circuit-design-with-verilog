@@ -35,7 +35,7 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
                                 .write(write),      .mdata(mdata),      .sximm5(sximm5),    .sximm8(sximm8), 
                                 .PC(PC),                                                                            // inputs
 
-                                .status_out(status_out),        .datapath_out(datapath_out));                       // outputs
+                                .status_out(status_out),        .datapath_out(out));                       // outputs
 
     assign N = status_out[2];
     assign V = status_out[1];

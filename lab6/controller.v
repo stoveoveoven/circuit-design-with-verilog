@@ -3,7 +3,7 @@
 `define writeRn 4'b0010
 
 // all purpose
-`define readRm 4'b0011
+`define loadB 4'b0011
 
 // primarily MOV Rd,Rm {,<sh_op>}
 `define writeRd 4'b0100
@@ -12,7 +12,9 @@
 
 // primarily ADD
 `define loadA 4'b0111
-`define loadA2 4'b1000
+
+
+`define loadS 4'b1000
 
 
 // `define shift 4'b0010
@@ -59,7 +61,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                         3'b110: begin                                       // if operation is MOV type
                             case (op)
                                 2'b10: state = `getRegIn;                   // MOV #sximm8
-                                2'b00: state = `readRm;                     // MOV Rd Rm
+                                2'b00: state = `loadB;                     // MOV Rd Rm
                                 default: state = `waiting;                  // unreachable with valid uses of MOV
                             endcase
                         end
@@ -68,7 +70,7 @@ module controller(  clk, s, reset, w, opcode, op,                               
                                 `ADD: state = `loadA;       
                                 `CMP: state = `loadA;
                                 `AND: state = `loadA;                       // ADD, CMP, AND
-                                `MVN: state = `readRm;                      // MVN
+                                `MVN: state = `loadB;                      // MVN
                                 default: state = `waiting;                  // unreachable
                             endcase
                         end
@@ -108,13 +110,13 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     nsel = 3'b100;
                     loada = 1'b1;
                     asel = 1'b0;
-                    state = `loadA2;
+                    state = `loadB;
                 end
-                `loadB: begin                                               // ADD, CMP, AND: stops loading, proceed to reading next reg
+                `loadB: begin
+                    loada = 1'b0;                                             // ADD, CMP, AND: stops loading, proceed to reading next reg
                     nsel = 3'b001;
                     loadb = 1'b1;
                     bsel = 1'b0;
-                    loada = 1'b0;
                     case (opcode)
                         3'b110: asel = (op == 2'b00) ? 1'b1 : 1'b0;         // if MOV Rd,Rm{,<sh_op>} or MVN Rd,Rm{,<sh_op>}, Rn doesnt matter
                         3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
@@ -123,26 +125,26 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     state = `writeRd;
                 end
                 `writeRd: begin
+                    loadb = 1'b0;
                     if (op == 2'b01)begin
                         loads = 1'b1;
+                        state = `loadS;
                     end
                     else begin
                         loadc = 1'b1;
+                        state = `writeRd2;
                     end
-
-                    state = `writeRd2;
+                end
+                `loadS: begin
+                    loads = 1'b0;
+                    state = `waiting;
+                    w     = 1'b1;
                 end
                 `writeRd2:begin
-                    if (op == 2'b01)begin                                   // if not CMP
-                        loads = 1'b0;
-                        
-                    end
-                    else begin                                              // CMP
-                        nsel  = 3'b010;
-                        vsel  = 2'b11;
-                        write = 1'b1;
-                        loadc = 1'b0;
-                    end
+                    nsel  = 3'b010;
+                    vsel  = 2'b11;
+                    write = 1'b1;
+                    loadc = 1'b0;
                     state = `writeRd3;
                 end
                 `writeRd3:begin
