@@ -12,7 +12,6 @@ module cpu(clk, reset, s, load, in, out, N, V, Z, w);
     wire [15:0] mdata, data_loop;
     wire [7:0] PC;
 
-    wire [15:0] datapath_out;
     wire [2:0] status_out;    
 
     regLoad #(16)   instructReg(in, load, clk, inst_regToDec);
