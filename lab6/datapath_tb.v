@@ -83,13 +83,6 @@ module datapath_tb;
             $display("FAIL");
         end
 
-        readnum = 3'd2;
-        #5;
-        if (DUT.REGFILE.R2 == 16'd16) $display("PASS");
-        else begin
-            $display("FAIL");
-        end
-
         readnum = 3'd1;
         #5;
         if (DUT.REGFILE.R1 == 16'd2) $display("PASS");
