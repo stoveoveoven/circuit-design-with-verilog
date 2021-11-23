@@ -133,11 +133,11 @@ module controller(  clk, s, reset, w, opcode, op,                               
                     state = `writeRd2;
                 end
                 `writeRd2:begin
-                    if (op == 2'b01)begin // if not CMP
+                    if (op == 2'b01)begin                                   // if not CMP
                         loads = 1'b0;
                         
                     end
-                    else begin // CMP
+                    else begin                                              // CMP
                         nsel  = 3'b010;
                         vsel  = 2'b11;
                         write = 1'b1;
