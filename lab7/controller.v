@@ -29,15 +29,16 @@
 `define MVN 2'b11
 
 
-module controller(  clk, s, reset, w, opcode, op,                                               //inputs
-                    write, nsel, vsel, loada, loadb, loadc, asel, bsel, loads, mdata, PC);      //outputs
+module controller(  clk, s, reset, opcode, op,                                  //inputs
+                    w, write, nsel, vsel, loada, loadb, loadc, asel, bsel, 
+                    loads, mdata, PC, load_pc, reset_pc, addr_sel, mem_cmd);    //outputs
 
     input            reset, clk, s;
     input      [1:0] op;
     input      [2:0] opcode;
     
-    output reg       write, loada, loadb, loadc, asel, bsel, loads, w;
-    output reg [1:0] vsel;
+    output reg       write, loada, loadb, loadc, asel, bsel, loads, w, load_pc, reset_pc, addr_sel;       //NEED TO IMPLEMENT LAB 7 VARS
+    output reg [1:0] vsel, mem_cmd;
     output reg [2:0] nsel;
     
     //not used for lab6
