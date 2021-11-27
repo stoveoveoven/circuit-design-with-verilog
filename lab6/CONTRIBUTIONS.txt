@@ -1,0 +1,13 @@
+Muhan
+- initial copy of cpu.v
+- initial copy of datapath.v
+- initial copy of instrucitonDec.v
+- initial copy of controller.v
+- datapath_tb.v
+
+Steven
+- revised and final version of cpu.v
+- revised and final version of datapath.v
+- revised and final version of instructionDec.v
+- revised and final version of controller.v
+- testing and de1soc demo
