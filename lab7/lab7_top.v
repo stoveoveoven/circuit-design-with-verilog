@@ -4,19 +4,23 @@ module lab7_top(KEY, SW, LEDR, HEX), HEX1, HEX2, HEX3, HEX4, HEX5);
     output [9:0] LEDR;
     output [6:0] HEX0, HEX1, HEX2, HEX3, HEX4, HEX5;
 
-    wire [15:0] read_data;
+    wire [15:0] r_data, w_data, dout;
     wire [8:0]  mem_addr;
     wire [1:0]  mem_cmd;
-    wire        din, dout, dout_enable;
+    wire        dout_enable, write;
 
-    assign dout_enable = (1'b0 == mem_addr[8:8]) && (`MREAD == mem_addr);
-    assign read_data = dout_enable ? in : {16{1'bz}};
 
-    ram MEM (   .clk(~KEY[0]),  .read_address(mem_addr[7:0]),   .write_address(), 
-                .write(),       .din(),                         .dout());
+    assign write       = (1'b0 == mem_addr[8:8]) && (`MWRITE == mem_cmd);
+    assign dout_enable = (1'b0 == mem_addr[8:8]) && (`MREAD  == mem_cmd);
 
-    cpu CPU (   .clk(~KEY[0]),  .reset(~KEY[1]),             .read_data(), 
-                .mem_cmd(),     .mem_addr());
+    assign r_data      = dout_enable ? dout : {16{1'bz}};
+    
+
+    ram MEM (   .clk(~KEY[0]),      .read_address(mem_addr[7:0]),   .write_address(mem_addr[7:0]), 
+                .write(write),      .din(w_data),                   .dout(dout));
+
+    cpu CPU (   .clk(~KEY[0]),      .reset(~KEY[1]),                .r_data(r_data), 
+                .mem_cmd(mem_cmd),  .mem_addr(mem_addr)             .w_data(w_data));
 endmodule
 
 module input_iface(clk, SW, ir, LEDR);
