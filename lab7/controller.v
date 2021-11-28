@@ -28,6 +28,9 @@
 `define AND 2'b10
 `define MVN 2'b11
 
+`define MWRITE = 2'b11
+`define MREAD  = 2'b01
+`define MNONE  = 2'b00
 
 module controller(  clk, s, reset, opcode, op,                                  //inputs
 
