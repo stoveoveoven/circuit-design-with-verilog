@@ -1,6 +1,6 @@
-`define MWRITE = 2'b11
-`define MREAD  = 2'b01
-`define MNONE  = 2'b00
+`define MWRITE 2'b11
+`define MREAD 2'b01
+`define MNONE 2'b00
 
 module lab7_top(KEY, SW, LEDR, HEX), HEX1, HEX2, HEX3, HEX4, HEX5);
     input [3:0] KEY;

@@ -1,93 +1,113 @@
+//should carry from toplevel, define for convenience
+`define MWRITE 2'b11
+`define MREAD 2'b01
+`define MNONE 2'b00
+
+//beforeAll
+`define RST 5'b00000
+`define IF1 5'b00001
+`define IF2 5'b00010
+`define updatePC 5'b00011
+
 // primarily MOV, Rn, #<im8>
-`define getRegIn 4'b0001
-`define writeRn 4'b0010
+`define getRegIn 5'b00100
+`define writeRn 5'b00101
 
 // all purpose
-`define loadB 4'b0011
+`define loadB 5'b00110
 
 // primarily MOV Rd,Rm {,<sh_op>}
-`define writeRd 4'b0100
-`define writeRd2 4'b0101
-`define writeRd3 4'b0110
+`define writeRd 5'b00111
+`define writeRd2 5'b01000
+`define writeRd3 5'b01001
 
 // primarily ADD
-`define loadA 4'b0111
+`define loadA 5'b01010
+`define loadS 5'b01011
 
-
-`define loadS 4'b1000
-
-
-// `define shift 4'b0010
-
-`define ALU 4'b0101
-`define shiftread 4'b0100 
-`define waiting 4'b1111
+//HALT state
+`define HALT 5'b11111
 
 `define ADD 2'b00
 `define CMP 2'b01
 `define AND 2'b10
 `define MVN 2'b11
 
-`define MWRITE = 2'b11
-`define MREAD  = 2'b01
-`define MNONE  = 2'b00
-
-module controller(  clk, s, reset, opcode, op,                                  //inputs
+module controller(  clk, s, reset, opcode, op,                                              //inputs
 
                     w, write, nsel, vsel, loada, loadb, loadc, asel, bsel, 
                     loads, mdata, PC, load_pc, reset_pc, addr_sel, mem_cmd,
-                    load_addr);                                                 //outputs
+                    load_ir, load_addr);                                                    //outputs
 
     input            reset, clk, s;
     input      [1:0] op;
     input      [2:0] opcode;
     
     output reg       write, loada, loadb, loadc, asel, bsel, loads, w, 
-                     load_pc, reset_pc, addr_sel, load_addr;                    //NEED TO IMPLEMENT LAB 7 VARS
+                     load_pc, reset_pc, addr_sel, load_addr;                                //NEED TO IMPLEMENT: load_pc, reset_pc, addr_sel, load_addr, mem_cmd
     output reg [1:0] vsel, mem_cmd;
     output reg [2:0] nsel;
     
-    //not used for lab6
+    //need to check PC and mdata for this lab
     output [7:0] PC;
     output [15:0] mdata;
 
-    assign PC = 8'b0;
-    assign mdata = 16'b0;
-
-    reg [3:0] state;
+    reg [4:0] state;
 
     always@(posedge clk)begin
         if(reset)begin
-            state = `waiting;
-            w     = 1'b1;
+            state    = `RST;
+            reset_pc = 1'b1;
+            load_pc  = 1'b1;
+            mem_cmd  = `MNONE;
         end
         else begin
             case(state)
-                `waiting: if(s)begin                                        // decode state
-                    case (opcode)
-                        3'b110: begin                                       // if operation is MOV type
-                            case (op)
-                                2'b10: state = `getRegIn;                   // MOV #sximm8
-                                2'b00: state = `loadB;                     // MOV Rd Rm
-                                default: state = `waiting;                  // unreachable with valid uses of MOV
-                            endcase
-                        end
-                        3'b101: begin                                       // if operation is ALU type
-                            case (op)
-                                `ADD: state = `loadA;       
-                                `CMP: state = `loadA;
-                                `AND: state = `loadA;                       // ADD, CMP, AND
-                                `MVN: state = `loadB;                      // MVN
-                                default: state = `waiting;                  // unreachable
-                            endcase
-                        end
-                        default: state = `waiting;                          // unreachable unless invalid opcode and op
-                    endcase
-                    w     = 1'b0;                                           // setting the w counter
+                `RST: begin
+                    state    = `IF1;
+                    addr_sel = 1'b1;
+                    PC       = 8'b0;
+                    mem_cmd  = `MREAD;
                 end
-                else begin
-                    state = `waiting;                                       // simple waiting state
-                    w     = 1'b1;
+                `IF1: begin
+                    state    = `IF2;
+                    addr_sel = 1'b1;
+                    load_ir  = 1'b1;
+                    mem_cmd  = `MREAD;
+                end
+                `IF2: begin
+                    state   = `updatePC;
+                    load_pc = 1'b1;
+                end
+                `updatePC: begin                                            // decoding instruction
+                    case(opcode)
+                        3'b110: begin                                       // if operation is MOV type
+                            case(op)
+                                2'b10:   state = `getRegIn;                 // MOV #sximm8
+                                2'b00:   state = `loadB;                    // MOV Rd Rm
+                                default: state = `IF1;                      // unreachable with valid MOV
+                            endcase
+                        end
+                        3'b101: begin                                       // alu type
+                            case(op)
+                                `MVN:    state = `loadB;                    // MVN
+                                `ADD:    state = `loadA;                    // ADD, CMP, AND
+                                `CMP:    state = `loadA;
+                                `AND:    state = `loadA;
+                                default: state = `IF1;                      // unreachable with valid alu commands
+                            endcase
+                        end
+                        3'b011: begin                                       // LDR
+                            state = 
+                        end
+                        3'b100: begin                                       // STR
+                            state = 
+                        end
+                        3'b111: begin                                       // special Halt stage
+                            state = `HALT;
+                        end
+                        default: state = `IF1;                              // defaults to starting stage if bad input
+                    endcase
                 end
                 `getRegIn: begin                                            // MOV #sximm8: load integer value
                     nsel  = 3'b100;
@@ -97,30 +117,16 @@ module controller(  clk, s, reset, opcode, op,                                  
                 end
                 `writeRn:begin                                              // MOV #sximm8: write value to reg
                     write = 1'b0;
-                    state = `waiting;
-                    w = 1'b1;
+                    state = `IF1;
                 end
-//                `readRm: begin                                            // used for move and negate, which only requires reading one value
-//                    nsel  = 3'b001;
-//                    loadb = 1'b1;
-//                    bsel = 1'b0;
-                    
-//                    case (opcode)
-//                        3'b110: asel = (op == 2'b00) ? 1'b1 : 1'b0; 
-//                        3'b101: asel = (op == 2'b11) ? 1'b1 : 1'b0; 
-//                        default: asel = 1'b0;
-//                    endcase
-//                    state = `writeRd;
-//                end
                 `loadA: begin                                               // ADD, CMP, AND: load first value into regA
-                    // read Rn
                     nsel = 3'b100;
                     loada = 1'b1;
                     asel = 1'b0;
                     state = `loadB;
                 end
                 `loadB: begin
-                    loada = 1'b0;                                             // ADD, CMP, AND: stops loading, proceed to reading next reg
+                    loada = 1'b0;                                           // ADD, CMP, AND: stops loading, proceed to reading next reg
                     nsel = 3'b001;
                     loadb = 1'b1;
                     bsel = 1'b0;
@@ -144,8 +150,7 @@ module controller(  clk, s, reset, opcode, op,                                  
                 end
                 `loadS: begin
                     loads = 1'b0;
-                    state = `waiting;
-                    w     = 1'b1;
+                    state = `IF1;
                 end
                 `writeRd2:begin
                     nsel  = 3'b010;
@@ -158,10 +163,12 @@ module controller(  clk, s, reset, opcode, op,                                  
                     asel = 1'b0;
                     bsel = 1'b0;
                     write = 1'b0;
-                    state = `waiting;
-                    w     = 1'b1;
+                    state = `IF1;
                 end
-                default: state = `waiting;
+                `HALT: begin
+                    state = `HALT;
+                end
+                default: state = `IF1;
             endcase 
         end
     end
