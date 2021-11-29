@@ -20,8 +20,8 @@ module lab7_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
     assign r_data      = dout_enable ? dout : {16{1'bz}};
 
 
-    ram     MEM (   .clk(~KEY[0]),          .read_address(mem_addr[7:0]),   .write_address(mem_addr[7:0]), 
-                    .write(write),          .din(w_data),                   .dout(dout));
+    ram #(16,8,"data.txt")   MEM (  .clk(~KEY[0]),          .read_address(mem_addr[7:0]),   .write_address(mem_addr[7:0]), 
+                                    .write(write),          .din(w_data),                   .dout(dout));
 
     cpu     CPU (   .clk(~KEY[0]),          .reset(~KEY[1]),                .r_data(r_data), 
                     .mem_cmd(mem_cmd),      .mem_addr(mem_addr),            .w_data(w_data));
@@ -30,11 +30,12 @@ module lab7_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
                     .readDataOut(r_data));
 
     LEDctrl LEDctrl(.LEDR(LEDR),            .memCmdIn(mem_cmd),             .memAddrIn(mem_addr),
-                    .writeDataIn(w_data),   .clk(~KEY[0]));
+                    .writeDataIn(w_data[7:0]),   .clk(~KEY[0]));
 endmodule
 
 module SWctrl(SW, memCmdIn, memAddrIn, readDataOut);
-    input [8:0] SW, memAddrIn;
+    input [9:0] SW;
+    input [8:0] memAddrIn;
     input [1:0] memCmdIn;
 
     output [15:0] readDataOut;
@@ -43,7 +44,7 @@ module SWctrl(SW, memCmdIn, memAddrIn, readDataOut);
 
     assign triStateCtrl = (memCmdIn == `MREAD) && (memAddrIn == 9'h140);    //not sure about this second part
     assign readDataOut[15:8] = triStateCtrl ? 8'h00 : {8{1'bx}};
-    assign readDataOut[7:0]  = triStateCtrl ? SW    : {8{1'bx}};            //not sure to use x or z
+    assign readDataOut[7:0]  = triStateCtrl ? SW[7:0]    : {8{1'bx}};            //not sure to use x or z
 endmodule
 
 module LEDctrl(LEDR, memCmdIn, memAddrIn, writeDataIn, clk);
@@ -52,13 +53,13 @@ module LEDctrl(LEDR, memCmdIn, memAddrIn, writeDataIn, clk);
     input [1:0] memCmdIn;
     input clk;
 
-    output [7:0] LEDR;
+    output [9:0] LEDR;
 
     wire load;
 
     assign load = (memCmdIn == `MWRITE) && (memAddrIn == 9'h100); 
 
-    regLoad #(8) LEDreg(writeDataIn, load, clk, LEDR);
+    regLoad #(8) LEDreg(writeDataIn, load, clk, LEDR[7:0]);
 endmodule
 
 //Standard vDFF

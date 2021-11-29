@@ -10,7 +10,7 @@ module ram(clk, read_address, write_address, write, din, dout);
     output reg [data_width-1:0] dout;
     reg [data_width-1:0] mem [2**addr_width-1:0];
 
-    initial $readmemb(filename, mem);
+    initial $readmemb("data.txt", mem);
 
     always@(posedge clk)begin
         if(write)

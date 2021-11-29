@@ -56,11 +56,11 @@ module controller(  clk, s, reset, opcode, op,                                  
     input      [2:0] opcode;
     
     output reg       write, loada, loadb, loadc, asel, bsel, loads, w, 
-                     load_pc, reset_pc, addr_sel, bypass, load_addr;                                //NEED TO IMPLEMENT: load_pc, reset_pc, addr_sel, load_addr, mem_cmd
+                     load_pc, reset_pc, addr_sel, bypass, load_addr,load_ir;                                //NEED TO IMPLEMENT: load_pc, reset_pc, addr_sel, load_addr, mem_cmd
     output reg [1:0] vsel, mem_cmd, nsel;
     
     //need to check PC and mdata for this lab
-    output [7:0] PC;
+    output reg [7:0] PC;
     output [15:0] mdata;
 
     reg [4:0] state;
