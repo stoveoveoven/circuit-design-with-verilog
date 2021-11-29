@@ -27,6 +27,15 @@
 //CMP
 `define loadS 5'b01011
 
+//LDR and STR
+`define getInt1 5'b01100
+`define getInt2 5'b01101
+`define getInt3 5'b01110
+`define dataAddr 5'b01111
+`define ldr1 5'b10000
+`define str1 5'b10001
+`define str2 5'b10010
+
 //HALT state
 `define HALT 5'b11111
 
@@ -39,16 +48,15 @@ module controller(  clk, s, reset, opcode, op,                                  
 
                     w, write, nsel, vsel, loada, loadb, loadc, asel, bsel, 
                     loads, mdata, PC, load_pc, reset_pc, addr_sel, mem_cmd,
-                    load_ir, load_addr);                                                    //outputs
+                    load_ir, bypass, load_addr);                                                    //outputs
 
     input            reset, clk, s;
     input      [1:0] op;
     input      [2:0] opcode;
     
     output reg       write, loada, loadb, loadc, asel, bsel, loads, w, 
-                     load_pc, reset_pc, addr_sel, load_addr;                                //NEED TO IMPLEMENT: load_pc, reset_pc, addr_sel, load_addr, mem_cmd
-    output reg [1:0] vsel, mem_cmd;
-    output reg [2:0] nsel;
+                     load_pc, reset_pc, addr_sel, bypass, load_addr;                                //NEED TO IMPLEMENT: load_pc, reset_pc, addr_sel, load_addr, mem_cmd
+    output reg [1:0] vsel, mem_cmd, nsel;
     
     //need to check PC and mdata for this lab
     output [7:0] PC;
@@ -100,10 +108,10 @@ module controller(  clk, s, reset, opcode, op,                                  
                             endcase
                         end
                         3'b011: begin                                       // LDR
-                            state = `loadA;                                 // LDR instruction starts with ADD
+                            state = `getInt1;                                // start by loading the #sximm5
                         end
                         3'b100: begin                                       // STR
-                            state = 
+                            state = `getInt1;                                // start by loading the #sximm5
                         end
                         3'b111: begin                                       // special Halt stage
                             state   = `HALT;
@@ -113,7 +121,7 @@ module controller(  clk, s, reset, opcode, op,                                  
                     endcase
                 end
                 `getRegIn: begin                                            // MOV #sximm8: load integer value
-                    nsel  = 3'b000;
+                    nsel  = 2'b00;
                     vsel  = 2'b01;
                     write = 1'b1;
                     state = `writeRn;
@@ -123,14 +131,14 @@ module controller(  clk, s, reset, opcode, op,                                  
                     state = `IF1;
                 end
                 `loadA: begin                                               // ADD, CMP, AND: load first value into regA
-                    nsel = 3'b000;
+                    nsel = 2'b00;
                     loada = 1'b1;
                     asel = 1'b0;
                     state = `loadB;
                 end
                 `loadB: begin
                     loada = 1'b0;                                           // ADD, CMP, AND: stops loading, proceed to reading next reg
-                    nsel = 3'b011;
+                    nsel = 2'b11;
                     loadb = 1'b1;
                     bsel = 1'b0;
                     case (opcode)
@@ -155,18 +163,70 @@ module controller(  clk, s, reset, opcode, op,                                  
                     loads = 1'b0;
                     state = `IF1;
                 end
-                `writeRd2:begin
-                    nsel  = 3'b001;
+                `writeRd2: begin
+                    nsel  = 2'b01;
                     vsel  = 2'b11;
                     write = 1'b1;
                     loadc = 1'b0;
                     state = `writeRd3;
                 end
-                `writeRd3:begin
+                `writeRd3: begin
                     asel = 1'b0;
                     bsel = 1'b0;
                     write = 1'b0;
                     state = `IF1;
+                end
+                `getInt1: begin
+                    vsel   = 2'b01;
+                    bypass = 1'b1;
+                    loada  = 1'b1;
+                    loadb  = 1'b0;
+                    asel   = 1'b0;
+                    state  = `getInt2;
+                end
+                `getInt2: begin
+                    loada  = 1'b0;
+                    bypass = 1'b0;
+                    nsel   = 2'b00;
+                    loadb  = 1'b1;
+                    bsel   = 1'b0;
+                    state  = `getInt3;
+                end
+                `getInt3: begin
+                    loadb = 1'b0;
+                    loadc = 1'b1;
+                    state = `dataAddr;
+                end
+                `dataAddr: begin
+                    load_addr = 1'b1;
+                    loadc     = 1'b0;
+                    case(opcode)
+                        3'b011: state = `ldr1;
+                        3'b100: begin
+                            state = `str1;
+                            nsel  = 2'b01;
+                            loadb = 1'b1;
+                        end
+                        default: state = `IF1;
+                    endcase
+                end
+                `ldr1: begin
+                    load_addr = 1'b0;
+                    addr_sel  = 1'b0;
+                    mem_cmd   = `MREAD;
+                end
+                `str1: begin
+                    load_addr = 1'b0;
+                    loadb     = 1'b0;
+                    asel      = 1'b1;
+                    bsel      = 1'b0;
+                    loadc     = 1'b1;
+                    state     = `str2;
+                end
+                `str2: begin
+                    loadc    = 1'b0;
+                    addr_sel = 1'b0;
+                    mem_cmd  = `MWRITE;
                 end
                 `HALT: begin
                     state   = `HALT;

@@ -9,7 +9,7 @@ module cpu(clk, reset, r_data, mem_cmd, mem_addr, w_data);
     wire [2:0] readnum, writenum, nsel, opcode;
     wire [1:0] ALUop, shift, op, vsel;
     
-    wire load_ir, loada, loadb, asel, bsel, loadc, loads, write, load_pc, reset_pc, addr_sel, load_addr;
+    wire load_ir, loada, loadb, asel, bsel, loadc, loads, write, load_pc, reset_pc, addr_sel, load_addr, bypass;
     wire [15:0] mdata, data_loop;
     wire [7:0] PC;
     wire [8:0] next_pc, PC_out, data_addr_out;
@@ -36,7 +36,7 @@ module cpu(clk, reset, r_data, mem_cmd, mem_addr, w_data);
                                 .loada(loada),      .loadb(loadb),      .loadc(loadc),      .asel(asel),        
                                 .bsel(bsel),        .loads(loads),      .mdata(mdata),      .PC(PC),             
                                 .load_pc(load_pc)   .reset_pc(rst_pc),  .addr_sel(addr_sel),.mem_cmd(mem_cmd),
-                                .load_ir(load_ir),  .load_addr(load_addr));                                         // outputs
+                                .load_ir(load_ir),  .bypass(bypass),    .load_addr(load_addr));                                         // outputs
 
     regLoad #(9)    pCounter   (.in(next_pc),       .load(load_pc),     .clk(clk),          .out(PC_out));       
 
@@ -44,7 +44,7 @@ module cpu(clk, reset, r_data, mem_cmd, mem_addr, w_data);
                                 .loadb(loadb),      .shift(shift),      .asel(asel),        .bsel(bsel),        
                                 .ALUop(ALUop),      .loadc(loadc),      .loads(loads),      .writenum(writenum), 
                                 .write(write),      .mdata(r_data),     .sximm5(sximm5),    .sximm8(sximm8), 
-                                .PC(PC),                                                                            // inputs
+                                .PC(PC),            .bypass(bypass),                                                                           // inputs
 
                                 .status_out(status_out),        .datapath_out(w_data));                             // outputs
 
