@@ -37,6 +37,7 @@
 `define str1 5'b10010
 `define str2 5'b10011
 
+`define delay 5'b10100
 //HALT state
 `define HALT 5'b11111
 
@@ -83,6 +84,7 @@ module controller(  clk, s, reset, opcode, op,                                  
                     mem_cmd  = `MREAD;
                 end
                 `IF1: begin
+                    write = 1'b0;
                     state    = `IF2;
                     addr_sel = 1'b1;
                     load_ir  = 1'b1;
@@ -231,6 +233,7 @@ module controller(  clk, s, reset, opcode, op,                                  
                     vsel  = 2'b00;
                     write = 1'b1;
                     nsel  = 2'b01;
+                    addr_sel  = 1'b1;
                     state = `IF1;
                 end
                 `str1: begin
