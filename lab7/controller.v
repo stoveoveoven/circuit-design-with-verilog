@@ -248,7 +248,12 @@ module controller(  clk, s, reset, opcode, op,                                  
                     loadc    = 1'b0;
                     addr_sel = 1'b0;
                     mem_cmd  = `MWRITE;
+                    state    = `delay;
+                end
+                `delay: begin
+                    mem_cmd  = `MREAD;
                     state    = `IF1;
+                    addr_sel  = 1'b1;
                 end
                 `HALT: begin
                     state   = `HALT;
