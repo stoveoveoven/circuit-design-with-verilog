@@ -6,10 +6,10 @@ module cpu(clk, reset, r_data, mem_cmd, mem_addr, w_data);
     output [1:0] mem_cmd;
 
     wire [15:0] inst_regToDec, sximm5, sximm8;
-    wire [2:0] readnum, writenum, nsel, opcode;
-    wire [1:0] ALUop, shift, op, vsel;
+    wire [2:0] readnum, writenum, opcode;
+    wire [1:0] ALUop, shift, op, vsel, nsel;
     
-    wire load_ir, loada, loadb, asel, bsel, loadc, loads, write, load_pc, reset_pc, addr_sel, load_addr, bypass;
+    wire load_ir, loada, loadb, asel, bsel, loadc, loads, write, load_pc, rst_pc, addr_sel, load_addr, bypass;
     wire [15:0] mdata, data_loop;
     wire [7:0] PC;
     wire [8:0] next_pc, PC_out, data_addr_out;
@@ -35,7 +35,7 @@ module cpu(clk, reset, r_data, mem_cmd, mem_addr, w_data);
                                 .w(w),              .write(write),      .nsel(nsel),        .vsel(vsel),        
                                 .loada(loada),      .loadb(loadb),      .loadc(loadc),      .asel(asel),        
                                 .bsel(bsel),        .loads(loads),      .mdata(mdata),      .PC(PC),             
-                                .load_pc(load_pc)   .reset_pc(rst_pc),  .addr_sel(addr_sel),.mem_cmd(mem_cmd),
+                                .load_pc(load_pc),  .reset_pc(rst_pc),  .addr_sel(addr_sel),.mem_cmd(mem_cmd),
                                 .load_ir(load_ir),  .bypass(bypass),    .load_addr(load_addr));                                         // outputs
 
     regLoad #(9)    pCounter   (.in(next_pc),       .load(load_pc),     .clk(clk),          .out(PC_out));       

@@ -20,7 +20,7 @@ module datapath (   clk, readnum, vsel, loada, loadb, shift, asel, bsel,
 
     regfile REGFILE(regFile_data_in, writenum, write, readnum, clk, regFile_out);       // regfile remains unchanged from lab5
 
-    bypass #(16) bypass(regFile_out, regFile_data_in, bypass, data_out);                   // MUX added to allow for #sximm8 to bypass regFile
+    bypass #(16) Bypass(regFile_out, regFile_data_in, bypass, data_out);                   // MUX added to allow for #sximm8 to bypass regFile
 
     regLoad #(16) regA(data_out, loada, clk, regA_out);                                 // regA remains unchanged from lab5
     regLoad #(16) regB(data_out, loadb, clk, shifter_in);                               // regB remains unchnaged from lab5
@@ -58,12 +58,13 @@ module bypass(deflt, bp, sel, out);
 
     input [width-1:0] deflt, bp;
     input sel;
-    output [width-1:0] out;
+    output reg [width-1:0] out;
 
-    if(sel==bp)
-        out = bp;
-    else begin
-        out = deflt;
+    always@(sel)begin
+        case(sel)
+            1'b1:   out = bp;
+            default out = deflt;
+        endcase
     end
 endmodule
 

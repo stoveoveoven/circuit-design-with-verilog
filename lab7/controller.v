@@ -33,8 +33,9 @@
 `define getInt3 5'b01110
 `define dataAddr 5'b01111
 `define ldr1 5'b10000
-`define str1 5'b10001
-`define str2 5'b10010
+`define ldr2 5'b10001
+`define str1 5'b10010
+`define str2 5'b10011
 
 //HALT state
 `define HALT 5'b11111
@@ -214,6 +215,13 @@ module controller(  clk, s, reset, opcode, op,                                  
                     load_addr = 1'b0;
                     addr_sel  = 1'b0;
                     mem_cmd   = `MREAD;
+                    state     = `ldr2;
+                end
+                `ldr2: begin
+                    vsel  = 2'b00;
+                    write = 1'b1;
+                    nsel  = 2'b01;
+                    state = `IF1;
                 end
                 `str1: begin
                     load_addr = 1'b0;
@@ -227,6 +235,7 @@ module controller(  clk, s, reset, opcode, op,                                  
                     loadc    = 1'b0;
                     addr_sel = 1'b0;
                     mem_cmd  = `MWRITE;
+                    state    = `IF1;
                 end
                 `HALT: begin
                     state   = `HALT;

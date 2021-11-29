@@ -36,7 +36,7 @@ module instructionDec(in, nsel, opcode, op, ALUop, sximm5, sximm8, shift, rnum, 
 endmodule
 
 module MUX3(zero, one, two, sel, out);
-    input [2:0] one, two, three;
+    input [2:0] zero, one, two;
     input [1:0] sel;
     output reg [2:0] out;
 
