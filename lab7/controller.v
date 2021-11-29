@@ -23,6 +23,8 @@
 
 // primarily ADD
 `define loadA 5'b01010
+
+//CMP
 `define loadS 5'b01011
 
 //HALT state
@@ -98,19 +100,20 @@ module controller(  clk, s, reset, opcode, op,                                  
                             endcase
                         end
                         3'b011: begin                                       // LDR
-                            state = 
+                            state = `loadA;                                 // LDR instruction starts with ADD
                         end
                         3'b100: begin                                       // STR
                             state = 
                         end
                         3'b111: begin                                       // special Halt stage
-                            state = `HALT;
+                            state   = `HALT;
+                            load_pc = 1'b0;
                         end
                         default: state = `IF1;                              // defaults to starting stage if bad input
                     endcase
                 end
                 `getRegIn: begin                                            // MOV #sximm8: load integer value
-                    nsel  = 3'b100;
+                    nsel  = 3'b000;
                     vsel  = 2'b01;
                     write = 1'b1;
                     state = `writeRn;
@@ -120,14 +123,14 @@ module controller(  clk, s, reset, opcode, op,                                  
                     state = `IF1;
                 end
                 `loadA: begin                                               // ADD, CMP, AND: load first value into regA
-                    nsel = 3'b100;
+                    nsel = 3'b000;
                     loada = 1'b1;
                     asel = 1'b0;
                     state = `loadB;
                 end
                 `loadB: begin
                     loada = 1'b0;                                           // ADD, CMP, AND: stops loading, proceed to reading next reg
-                    nsel = 3'b001;
+                    nsel = 3'b011;
                     loadb = 1'b1;
                     bsel = 1'b0;
                     case (opcode)
@@ -153,7 +156,7 @@ module controller(  clk, s, reset, opcode, op,                                  
                     state = `IF1;
                 end
                 `writeRd2:begin
-                    nsel  = 3'b010;
+                    nsel  = 3'b001;
                     vsel  = 2'b11;
                     write = 1'b1;
                     loadc = 1'b0;
@@ -166,7 +169,8 @@ module controller(  clk, s, reset, opcode, op,                                  
                     state = `IF1;
                 end
                 `HALT: begin
-                    state = `HALT;
+                    state   = `HALT;
+                    load_pc = 1'b0;
                 end
                 default: state = `IF1;
             endcase 

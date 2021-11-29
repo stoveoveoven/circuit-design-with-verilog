@@ -35,15 +35,15 @@ module instructionDec(in, nsel, opcode, op, ALUop, sximm5, sximm8, shift, rnum, 
     assign wnum   = rwnum;
 endmodule
 
-module MUX3(one, two, three, sel, out);
+module MUX3(zero, one, two, sel, out);
     input [2:0] one, two, three, sel;
     output reg [2:0] out;
 
     always@(*)begin
         case(sel)
-            3'b100: out = one;
-            3'b010: out = two;
-            3'b001: out = three;
+            3'b000: out = zero;
+            3'b010: out = one;
+            3'b001: out = two;
             default: out = 3'bxxx;
         endcase
     end

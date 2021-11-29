@@ -42,9 +42,9 @@ module MUX4(one, two, three, four, sel, out);
 
     always@(*)begin
         case(sel)
-            2'b00: out = 16'b0;         //stays 0 for lab 6
+            2'b00: out = one;        
             2'b01: out = two;
-            2'b10: out = 16'b0;         //stays 0 for lab 6
+            2'b10: out = three;       
             2'b11: out = four;
         endcase
     end
