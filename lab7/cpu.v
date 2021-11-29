@@ -19,7 +19,7 @@ module cpu(clk, reset, r_data, mem_cmd, mem_addr, w_data);
     wire N, V, Z, w, s;   
     wire [15:0] out;
 
-    assign next_pc  = rst_pc   ? (PC_out + 9'b1) : 9'b0;
+    assign next_pc  = rst_pc   ? 9'b0 : (PC_out + 9'b1);    
     assign mem_addr = addr_sel ?  PC_out         : data_addr_out;
 
     regLoad #(16)   instructReg(.in(r_data),        .load(load_ir),     .clk(clk),          .out(inst_regToDec));

@@ -18,9 +18,9 @@ module datapath (   clk, readnum, vsel, loada, loadb, shift, asel, bsel,
 
     MUX4 vMUX(mdata, sximm8, {8'b0, PC}, data_loop, vsel, regFile_data_in);             // for lab6, mdata and PC are not used, and will be assigned 0
 
-    regfile REGFILE(regFile_data_in, writenum, write, readnum, clk, regFile_out);       // regfile remains unchanged from lab5
+    regfile REGFILE(regFile_data_in, writenum, write, readnum, clk, data_out);       // regfile remains unchanged from lab5
 
-    bypass #(16) Bypass(regFile_out, regFile_data_in, bypass, data_out);                   // MUX added to allow for #sximm8 to bypass regFile
+    // bypass #(16) Bypass(regFile_out, regFile_data_in, bypass, data_out);                   // MUX added to allow for #sximm8 to bypass regFile
 
     regLoad #(16) regA(data_out, loada, clk, regA_out);                                 // regA remains unchanged from lab5
     regLoad #(16) regB(data_out, loadb, clk, shifter_in);                               // regB remains unchnaged from lab5

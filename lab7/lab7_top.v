@@ -19,7 +19,7 @@ module lab7_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 
     assign r_data      = dout_enable ? dout : {16{1'bz}};
 
-
+    
     ram #(16,8,"data.txt")   MEM (  .clk(~KEY[0]),          .read_address(mem_addr[7:0]),   .write_address(mem_addr[7:0]), 
                                     .write(write),          .din(w_data),                   .dout(dout));
 
@@ -43,8 +43,8 @@ module SWctrl(SW, memCmdIn, memAddrIn, readDataOut);
     wire triStateCtrl;
 
     assign triStateCtrl = (memCmdIn == `MREAD) && (memAddrIn == 9'h140);    //not sure about this second part
-    assign readDataOut[15:8] = triStateCtrl ? 8'h00 : {8{1'bx}};
-    assign readDataOut[7:0]  = triStateCtrl ? SW[7:0]    : {8{1'bx}};            //not sure to use x or z
+    assign readDataOut[15:8] = triStateCtrl ? 8'h00 : {8{1'bz}};
+    assign readDataOut[7:0]  = triStateCtrl ? SW[7:0]    : {8{1'bz}};            //not sure to use x or z
 endmodule
 
 module LEDctrl(LEDR, memCmdIn, memAddrIn, writeDataIn, clk);

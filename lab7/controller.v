@@ -76,6 +76,8 @@ module controller(  clk, s, reset, opcode, op,                                  
             case(state)
                 `RST: begin
                     state    = `IF1;
+                    reset_pc = 1'b0;
+                    load_pc = 1'b0;  
                     addr_sel = 1'b1;
                     PC       = 8'b0;
                     mem_cmd  = `MREAD;
@@ -84,13 +86,16 @@ module controller(  clk, s, reset, opcode, op,                                  
                     state    = `IF2;
                     addr_sel = 1'b1;
                     load_ir  = 1'b1;
-                    mem_cmd  = `MREAD;
                 end
                 `IF2: begin
                     state   = `updatePC;
+                    load_ir  = 1'b0;
                     load_pc = 1'b1;
+                    mem_cmd  = `MNONE;
                 end
                 `updatePC: begin                                            // decoding instruction
+                    mem_cmd  = `MREAD;
+                    load_pc = 1'b0;                                       
                     case(opcode)
                         3'b110: begin                                       // if operation is MOV type
                             case(op)
@@ -109,10 +114,10 @@ module controller(  clk, s, reset, opcode, op,                                  
                             endcase
                         end
                         3'b011: begin                                       // LDR
-                            state = `getInt1;                                // start by loading the #sximm5
+                            state = `loadA;                                // start by loadA
                         end
                         3'b100: begin                                       // STR
-                            state = `getInt1;                                // start by loading the #sximm5
+                            state = `loadA;                                // start by loadA
                         end
                         3'b111: begin                                       // special Halt stage
                             state   = `HALT;
@@ -135,7 +140,9 @@ module controller(  clk, s, reset, opcode, op,                                  
                     nsel = 2'b00;
                     loada = 1'b1;
                     asel = 1'b0;
-                    state = `loadB;
+                    
+                    if (opcode == 3'b100 || opcode  == 3'b011)state = `getInt1;
+                    else state = `loadB;
                 end
                 `loadB: begin
                     loada = 1'b0;                                           // ADD, CMP, AND: stops loading, proceed to reading next reg
@@ -178,21 +185,24 @@ module controller(  clk, s, reset, opcode, op,                                  
                     state = `IF1;
                 end
                 `getInt1: begin
-                    vsel   = 2'b01;
-                    bypass = 1'b1;
-                    loada  = 1'b1;
-                    loadb  = 1'b0;
-                    asel   = 1'b0;
-                    state  = `getInt2;
-                end
-                `getInt2: begin
+                    // vsel   = 2'b01;
+                    // bypass = 1'b1;
+
                     loada  = 1'b0;
-                    bypass = 1'b0;
-                    nsel   = 2'b00;
-                    loadb  = 1'b1;
-                    bsel   = 1'b0;
+                    asel   = 1'b0;
+                    loadb  = 1'b0;
+                    bsel   = 1'b1;
+
                     state  = `getInt3;
                 end
+                // `getInt2: begin
+                //     loada  = 1'b0;
+                //     // bypass = 1'b0;
+                //     nsel   = 2'b00;
+                //     loadb  = 1'b1;
+                //     bsel   = 1'b0;
+                //     state  = `getInt3;
+                // end
                 `getInt3: begin
                     loadb = 1'b0;
                     loadc = 1'b1;
