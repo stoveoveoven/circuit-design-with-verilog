@@ -13,7 +13,6 @@ module lab7_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
     wire [1:0]  mem_cmd;
     wire        dout_enable, write;
 
-
     assign write       = (1'b0 == mem_addr[8:8]) && (`MWRITE == mem_cmd);
     assign dout_enable = (1'b0 == mem_addr[8:8]) && (`MREAD  == mem_cmd);
 
@@ -45,6 +44,7 @@ module SWctrl(SW, memCmdIn, memAddrIn, readDataOut);
     assign triStateCtrl = (memCmdIn == `MREAD) && (memAddrIn == 9'h140);    //not sure about this second part
     assign readDataOut[15:8] = triStateCtrl ? 8'h00 : {8{1'bz}};
     assign readDataOut[7:0]  = triStateCtrl ? SW[7:0]    : {8{1'bz}};            //not sure to use x or z
+    // assign readDataOut[7:0]  = triStateCtrl ? 8'd69    : {8{1'bz}};
 endmodule
 
 module LEDctrl(LEDR, memCmdIn, memAddrIn, writeDataIn, clk);

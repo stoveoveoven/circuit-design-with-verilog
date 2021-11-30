@@ -31,7 +31,7 @@ module lab7_check_tb;
 
     #10; // wait until next falling edge of clock
     KEY[1] = 1'b1; // reset de-asserted, PC still undefined if as in Figure 4
-
+    SW = 10'd69;
     #10; // waiting for RST state to cause reset of PC
 
     // NOTE: your program counter register output should be called PC and be inside a module with instance name CPU

@@ -62,7 +62,7 @@ module controller(  clk, s, reset, opcode, op,                                  
     
     //need to check PC and mdata for this lab
     output reg [7:0] PC_garbage;
-    output [15:0] mdata;
+    output reg [15:0] mdata;
 
     reg [4:0] state;
 
@@ -232,7 +232,11 @@ module controller(  clk, s, reset, opcode, op,                                  
                     vsel  = 2'b00;
                     write = 1'b1;
                     nsel  = 2'b01;
+                    state = `delay;
+                end
+                `delay: begin
                     addr_sel  = 1'b1;
+                    write = 1'b0;
                     state = `IF1;
                 end
                 `str1: begin
