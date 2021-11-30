@@ -49,7 +49,7 @@
 module controller(  clk, s, reset, opcode, op,                                              //inputs
 
                     w, write, nsel, vsel, loada, loadb, loadc, asel, bsel, 
-                    loads, mdata, PC, load_pc, reset_pc, addr_sel, mem_cmd,
+                    loads, mdata, PC_garbage, load_pc, reset_pc, addr_sel, mem_cmd,
                     load_ir, bypass, load_addr);                                                    //outputs
 
     input            reset, clk, s;
@@ -61,7 +61,7 @@ module controller(  clk, s, reset, opcode, op,                                  
     output reg [1:0] vsel, mem_cmd, nsel;
     
     //need to check PC and mdata for this lab
-    output reg [7:0] PC;
+    output reg [7:0] PC_garbage;
     output [15:0] mdata;
 
     reg [4:0] state;
@@ -80,7 +80,6 @@ module controller(  clk, s, reset, opcode, op,                                  
                     reset_pc = 1'b0;
                     load_pc = 1'b0;  
                     addr_sel = 1'b1;
-                    PC       = 8'b0;
                     mem_cmd  = `MREAD;
                 end
                 `IF1: begin

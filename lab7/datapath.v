@@ -1,11 +1,11 @@
 module datapath (   clk, readnum, vsel, loada, loadb, shift, asel, bsel, 
                     ALUop, loadc, loads, writenum, write, mdata, sximm5, sximm8, 
-                    PC, bypass,
+                    PC_garbage, bypass,
 
                     status_out, datapath_out);
 
     input [15:0] mdata, sximm8, sximm5;
-    input [7:0] PC;
+    input [7:0] PC_garbage;
     input [2:0] writenum, readnum;
     input [1:0] shift, ALUop, vsel;
     input clk, write, loada, loadb, loadc, loads, asel, bsel, bypass;
@@ -16,7 +16,7 @@ module datapath (   clk, readnum, vsel, loada, loadb, shift, asel, bsel,
     wire [15:0] regFile_data_in, regFile_out, data_out, shifter_in, shifter_out, ALU_ain, ALU_bin, ALU_out, data_loop, bMUX_one, regA_out;
     wire [2:0] stat;
 
-    MUX4 vMUX(mdata, sximm8, {8'b0, PC}, data_loop, vsel, regFile_data_in);             // for lab6, mdata and PC are not used, and will be assigned 0
+    MUX4 vMUX(mdata, sximm8, {8'b0, PC_garbage}, data_loop, vsel, regFile_data_in);             // for lab6, mdata and PC are not used, and will be assigned 0
 
     regfile REGFILE(regFile_data_in, writenum, write, readnum, clk, data_out);       // regfile remains unchanged from lab5
 
