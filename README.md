@@ -9,7 +9,7 @@
   6. Finite State Machine controller for a simple RISC in Verilog
   7. Memory and I/O for the simple RISC in Verilog
 
-- **Miscellaneous Notes**
+**Miscellaneous Notes**
   - Each lab was about 36-48 hours of work between me and my lab partner
   - Each lab folder contins a contributions file that lists the work done by me (Muhan) and my partner
  
