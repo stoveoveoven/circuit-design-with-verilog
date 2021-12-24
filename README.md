@@ -1,6 +1,6 @@
 # Collection of lab files created over the course of a semester for a hardware course at UBC
 
-- **Table of contents**
+**Table of contents**
   1. Omitted, did not contain Verilog/ARM assembly
   2. Omitted, did not contain Verilog/ARM assembly
   3. Combinational logic and finite state machines in Verilog
