@@ -1,10 +1,9 @@
-##Alan
+Muhan
 - Verilog code for all modules
 - Datapath.v
 - lab5_top.v
 
-##Steven
+Steven
 - All testbenches
 - cleaning up datapath
 - ARM demo.txt
-- 
