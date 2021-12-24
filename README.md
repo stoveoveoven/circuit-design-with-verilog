@@ -1,8 +1,8 @@
 # Collection of lab files created over the course of a semester for a hardware course at UBC
 
 - **Table of contents**
-  - *Labs 1 and 2 have been ommitted as they did not contain any circuit design with verilog or writing of ARM assembly*
-  
+  1. Omitted, did not contain Verilog/ARM assembly
+  2. Omitted, did not contain Verilog/ARM assembly
   3. Combinational logic and finite state machines in Verilog
   4. Translating C to ARM Assembly (very basic)
   5. Datapath module for a simple RISC in Verilog
