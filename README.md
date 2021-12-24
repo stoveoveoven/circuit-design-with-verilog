@@ -1,8 +1,8 @@
 # Table of Contents
-  1. Omitted, did not contain Verilog/ARM assembly
+  1. *Omitted*, did not contain Verilog/ARM assembly
 
 
-  2. Omitted, did not contain Verilog/ARM assembly
+  2. *Omitted*, did not contain Verilog/ARM assembly
 
 
   3. Combinational logic and finite state machines in Verilog
