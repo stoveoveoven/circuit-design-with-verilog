@@ -21,5 +21,5 @@
 
 **Notes**
   - Each lab was about 36-48 hours of work between me and my lab partner
-  - Each lab folder contins a contributions file that lists the work done by me (Muhan) and my partner
+  - Each lab folder contins a contributions file that lists the work done by me (Steven) and my partner
  
